@@ -327,12 +327,16 @@ class Rules:
         if self.data.board.squares[square] != -1: # square is already occupied
             self.removeMarble(square)
         marble = self.calc.getActiveMarble()
+        startSquare = marble.square
+        waypoints = botHelp.getSquaresBetween(startSquare, square)
 
-        x, y = self.data.board.squaresXY[square]
-        if self.data.marbles.waypoints:
-            for tupel in self.data.marbles.waypoints:
-                marble.waypoints.append(tupel)
-        marble.waypoints.append((x, y))
+        # create waypoints for marble to travel on
+        # x, y = self.data.board.squaresXY[square]
+        # if waypoints:
+        for waypoint in waypoints:
+            tupel = self.data.board.squaresXY[waypoint]
+            marble.waypoints.append(tupel)
+        # marble.waypoints.append((x, y))
         marble.square = square
 
     def removeMarble(self, square):
