@@ -46,6 +46,8 @@ class Actions:
             self.calc.updateBoard()
             self.rules.nextTurn()
             return
+        if card in range(5): # card in hand was selected
+            self.rules.toggleSelectCard(card)
 
     def keyPress(self, key):
         if key == "1" or key == "2" or key == "3" or key == "4" or key == "5":
