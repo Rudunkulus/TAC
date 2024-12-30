@@ -218,7 +218,7 @@ class Rules:
             self.dealCards()
             self.selectNextPlayer() # 2x selectNextPlayer because Dealer moves
 
-        if self.data.parameters.bots[self.calc.getActivePlayer]: # current player is abot
+        if self.data.parameters.bots[self.calc.getActivePlayer()]: # current player is abot
             self.data.board.isActivePlayerABot = True
         else:
             self.data.board.isActivePlayerABot = False
