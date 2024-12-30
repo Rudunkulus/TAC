@@ -31,7 +31,7 @@ class Actions:
 
     def mouseClick(self, x, y):
         square = self.calc.getClosestSquare(x, y)
-        card = self.calc.getClosestCard(x,y) # TODO: enable card selecting with click
+        card = self.calc.getClosestCard(x,y)
         if square != -1 and not self.data.board.isDiscardingCards: # selected square
             if square in self.data.board.projectedSquares: # selected projected square
                 self.rules.moveMarble(square)
