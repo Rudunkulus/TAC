@@ -9,7 +9,7 @@
 #         possibleMoves = self.getPossibleMoves(marble, card, player, homeSquares)
 #         self.data.board.projectedSquares = possibleMoves
 
-def getPossibleSquares(board, marbleSquare, cardValue, player, isAbleToFinish):
+def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:int, isAbleToFinish:bool):
     """ Return list of possible squares the given marble could reach with the given card.\n
     Return empty list if no move is possible with current combination"""
     possibleSquares = []
