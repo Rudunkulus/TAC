@@ -29,10 +29,11 @@ while run:
     clock.tick(FPS)
     draw.updateWindow(win)
 
-    # if data.board.isActivePlayerABot:
-    #     try:
-    #         actions.botTurn()
-    #     except Exception as e: print(e)
+    if data.board.isActivePlayerABot:
+        # try:
+        #     actions.botTurn()
+        # except Exception as e: print(e)
+        actions.botTurn()
 
     for event in pygame.event.get(): # Triggering the event
         if event.type == pygame.QUIT:
