@@ -224,7 +224,7 @@ class Rules:
             self.data.board.isActivePlayerABot = False
 
         # check if any move is possible
-        if not self.rules.isAnyMovePossible():
+        if not self.isAnyMovePossible():
             self.data.board.isDiscardingCards = True
             print("No move possible. Your are now discarding cards")
 
