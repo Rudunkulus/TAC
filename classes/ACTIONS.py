@@ -1,6 +1,7 @@
 import random
 import operator
 from classes import ANIMATION, DATA, CALC
+from methods import botHelp
 
 class Actions:
     def __init__(self, 
@@ -241,7 +242,8 @@ class Rules:
         for card in self.data.cards.inHand[player]:
             for marble in self.data.marbles.marbles[player]: # tries every combination of card and marble
                 homeSquares = self.calc.getHomeSquares(player)
-                possibleMoves = self.getPossibleMoves(marble, card, player, homeSquares)
+                possibleMoves = botHelp.getPossibleSquares(self.data.board.squares, marble.square, card.value, player, marble.isAbleToFinish)
+                # possibleMoves = self.getPossibleMoves(marble, card, player, homeSquares)
                 if possibleMoves: # a move is possible
                     return True
         return False
@@ -254,7 +256,8 @@ class Rules:
             marble = self.calc.getActiveMarble()
             player = self.calc.getActivePlayer()
             homeSquares = self.calc.getHomeSquares(player)
-            possibleMoves = self.getPossibleMoves(marble, card, player, homeSquares)
+            possibleMoves = botHelp.getPossibleSquares(self.data.board.squares, marble.square, card.value, player, marble.isAbleToFinish)
+            # possibleMoves = self.getPossibleMoves(marble, card, player, homeSquares)
             self.data.board.projectedSquares = possibleMoves
     
     def getPossibleMoves(self, marble, card, player, homeSquares):
