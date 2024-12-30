@@ -135,7 +135,7 @@ def getOwner(square:int)->int:
     square must be between 64 and 95\n
     Return -1 if square exceeds domain"""
     if square < 64 or square > 95:
-        print("WARNING: square " + str(square) + " exceeded domain (64-95). Returning -1")
+        print("WARNING in getOwner(): square " + str(square) + " exceeded domain (64-95). Returning -1")
         return -1
     else:
         return int((square - 64) % 16 / 4)
@@ -146,7 +146,7 @@ def getEntrySquare(player:int)->int:
     if player in range(4):
         return 16*player
     else:
-        print("WARNING: player " + str(player) + " exceeded domain (0-3). Returning -1")
+        print("WARNING in getEntrySquare(): player " + str(player) + " exceeded domain (0-3). Returning -1")
         return -1
 
 def getHomeSquares(player:int)->list[int]:
@@ -157,7 +157,7 @@ def getHomeSquares(player:int)->list[int]:
         homeSquares = [x+64+4*player for x in homeSquares]
         return homeSquares
     else:
-        print("WARNING: player " + str(player) + " exceeded domain (0-3). Returning empty list")
+        print("WARNING in getHomeSquares(): player " + str(player) + " exceeded domain (0-3). Returning empty list")
         return []
 
 def getFinishSquares(player:int)->list[int]:
@@ -168,5 +168,5 @@ def getFinishSquares(player:int)->list[int]:
         finishSquares = [x+80+4*player for x in finishSquares]
         return finishSquares
     else:
-        print("WARNING: player (" + str(player) + ") exceeded domain (0-3). Returning empty list")
+        print("WARNING in getFinishSquares(): player (" + str(player) + ") exceeded domain (0-3). Returning empty list")
         return []
