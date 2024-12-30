@@ -89,6 +89,16 @@ def saturate(square:int)->int:
         square += 64
     return square
 
+def getOwner(square:int)->int:
+    """Return the player who is the owner of the home/finish of the given square\n
+    square must be between 64 and 95\n
+    Return -1 if square exceeds domain"""
+    if square < 64 or square > 95:
+        print("WARNING: square " + str(square) + " exceeded domain (64-95). Returning -1")
+        return -1
+    else:
+        return int((square - 64) % 16 / 4)
+
 def getEntrySquare(player:int)->int:
     """Returns home square of player. \n
     player must be a number between 0 and 3"""
