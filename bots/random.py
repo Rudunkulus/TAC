@@ -1,11 +1,19 @@
 from methods import botHelp
 from classes import ANIMATION
 
-def main(players:list[int], marbles:list[ANIMATION.Marble], squares:list[int], cardsInHand:list[int], numberOfCardsInHand:list[int], discardPile:list[int], remainingCards:list[int])->tuple[int,int,int]:
+def main(players:list[int],
+         marbles:list[ANIMATION.Marble],
+         squares:list[int],
+         cardsInHand:list[int],
+         numberOfCardsInHand:list[int],
+         discardPile:list[int],
+         remainingCards:list[int]
+         )->tuple[int,int,int, bool]:
     """Return (cardIndex, marbleIndex, landingSquare)"""
     cardIndex = 0
     marbleIndex = 0
     landingSquare = 0
+    isDiscarding = False
 
     ############################################################################################################################################################
     # players: players is a list of all players in order of sequence.
@@ -84,6 +92,6 @@ def main(players:list[int], marbles:list[ANIMATION.Marble], squares:list[int], c
             possibleSquares = botHelp.getPossibleSquares(squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish)
             if possibleSquares: # takes first possible combination
                 print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
-                return cardIndex, marbleIndex, possibleSquares[0] # take first square if multiple are possible 
-
-    return cardIndex, marbleIndex, landingSquare
+                return cardIndex, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
+    # tried all combinations but no valid move found -> discard first card
+    return 0, marbleIndex, landingSquare, True
