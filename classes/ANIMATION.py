@@ -28,3 +28,9 @@ class Marble:
         self.isAbleToFinish = False
         self.waypoints = [] # tupel e.g. (0,0)
         self.radius = 12
+
+class MarbleForBots:
+    def __init__(self):
+        self.owner = -1
+        self.square = -1
+        self.isAbleToFinish = False

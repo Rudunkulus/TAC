@@ -77,8 +77,19 @@ class Actions:
         for cardValue in remainingPile:
             remainingCards[cardValue] += 1
 
+        # transform marbles to botmarbles
+        marblesForBots = [[],[],[],[]]
+        for player in players:
+            for marble in self.data.marbles.marbles[player]:
+                marbleForBots = ANIMATION.MarbleForBots()
+                marbleForBots.owner = player
+                marbleForBots.square = marble.square
+                marbleForBots.isAbleToFinish = marble.isAbleToFinish
+                marblesForBots[player].append(marbleForBots)
+
         # bot decision
-        card, marble, square = bots.random.main(players, squares, cardsInHand, numberOfCardsInHand, discardPile, remainingCards)
+        # use bots."name".main()
+        cardIndex, marbleIndex, landingSquare = botRandom.main(players, marblesForBots, cardsInHand, numberOfCardsInHand, discardPile, remainingCards)
 
         # check if move is possible
         self.data.marbles.currentlySelected = marble
