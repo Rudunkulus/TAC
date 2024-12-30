@@ -1,13 +1,22 @@
-from classes import CALC
+from methods import botHelp
+from classes import ANIMATION
 
-def main(players:list[int], squares:list[int], cardsInHand:list[int], numberOfCardsInHand:list[int], discardPile:list[int], remainingCards:list[int]):
-    card = 0
-    marble = 0
+def main(players:list[int], marbles:list[ANIMATION.Marble], squares:list[int], cardsInHand:list[int], numberOfCardsInHand:list[int], discardPile:list[int], remainingCards:list[int])->tuple[int,int,int]:
+    """Return (cardIndex, marbleIndex, landingSquare)"""
+    cardIndex = 0
+    marbleIndex = 0
     landingSquare = 0
 
+    ############################################################################################################################################################
     # players: players is a list of all players in order of sequence.
     # eg [3,0,1] -> currently it is player 3's turn, after that it is player 0's turn and after that player 1
     # (zero based: player 0 ^= player #1)
+
+    # marbles: list of lists of classes of marbles
+    # has follwing attributes:
+    # owner: range 0-3
+    # square: position on board, range 0-95 (see next paragraph)
+    # isAbleToFinish: specifies whether the marble is able to enter the finish squares (is enabled after its first move)
 
     # squares: describes the current board. it has 96 entries:
     # 0-63: ring
@@ -44,7 +53,7 @@ def main(players:list[int], squares:list[int], cardsInHand:list[int], numberOfCa
     # reminder: some of these cards could be in other player's hand
     # remainingCards[0] and remainingCards[11] are always =0 since there are no "0"s and "11"s in the game
 
-    # CALC: contains useful functions
+    # botHelp: contains useful functions
     # TODO: explain more
 
     # for returning:
@@ -62,4 +71,19 @@ def main(players:list[int], squares:list[int], cardsInHand:list[int], numberOfCa
     # if the combination is not valid or any value exceeds its domain, a random valid move will be chosen
     # if no valid move is possible, the returned card will be discarded
     # if the returned card exceeds its domain and no valid move is possible, a random card will be discarded
-    return card, marble, landingSquare
+    #########################################################################################################################################################
+
+    # make random valid move
+    currentPlayer = players[0] # currentPlayer
+    marblesOfPlayer = marbles[currentPlayer]
+    for cardIndex in range(len(cardsInHand)):
+        for marbleIndex in range(len(marblesOfPlayer)):
+            # check if combination is valid
+            cardValue = cardsInHand[cardIndex]
+            marble = marblesOfPlayer[marbleIndex]
+            possibleSquares = botHelp.getPossibleSquares(squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish)
+            if possibleSquares: # takes first possible combination
+                print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
+                return cardIndex, marbleIndex, possibleSquares[0] # take first square if multiple are possible 
+
+    return cardIndex, marbleIndex, landingSquare
