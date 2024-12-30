@@ -121,6 +121,16 @@ def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->li
             square = _getPreviousSquare(square)
     return squaresBetween
 
+def getSquaresOfAllMarbles(squares:list[int])->list[list[int],list[int],list[int],list[int]]:
+    """return a list of lists with the square of each marble"""
+    marbles = [[],[],[],[]]
+    for square in range(len(squares)): # check each square
+        if squares[square] != -1: # occupied
+            player = squares[square]
+            marbles[player].append(square)
+    return marbles
+        
+
 def saturate(square:int)->int:
     """ saturates looping squares to [0,63]\n
      64 -> 0 and -1 -> 63 """
