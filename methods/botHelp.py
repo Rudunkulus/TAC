@@ -105,7 +105,7 @@ def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->li
             player = getOwner(endSquare)
 
     if startSquare in getHomeSquares(player):
-        return getEntrySquare(player) # just return entry square. This case shouldn't be possible going backwards, so no extra check needed
+        return [getEntrySquare(player)] # just return entry square. This case shouldn't be possible going backwards, so no extra check needed
     
     squaresBetween = []
     if isMovingForwards:
