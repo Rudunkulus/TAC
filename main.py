@@ -43,6 +43,8 @@ while run:
             try:
                 actions.mouseClick(x_mouse,y_mouse)
             except Exception as e: print(e)
+            
+            # actions.mouseClick(x_mouse,y_mouse)
 
         if event.type == pygame.KEYDOWN:
             key = pygame.key.name(event.key)
