@@ -259,69 +259,6 @@ class Rules:
             possibleMoves = botHelp.getPossibleSquares(self.data.board.squares, marble.square, card.value, player, marble.isAbleToFinish)
             # possibleMoves = self.getPossibleMoves(marble, card, player, homeSquares)
             self.data.board.projectedSquares = possibleMoves
-    
-    def getPossibleMoves(self, marble, card, player, homeSquares):
-        """ returns list of possible squares, the selected marble could reach with the selected card. returns empty list if no move is possible """
-        possibleMoves = []
-        if marble.square in homeSquares:
-            if card.value in [1,13]: # different rules
-                waypoints = [self.data.playerSpecific.entrySquare[player]]
-                possibleMoves = waypoints
-        else:
-            for nextSquare in self.getNextSquares(player, marble.square, marble.isAbleToFinish):
-                movesLeft = card.value -1
-                waypoints = []
-                self.tryNextSquare(player, nextSquare, movesLeft, marble.isAbleToFinish, waypoints, possibleMoves)
-        return possibleMoves
-
-    def getNextSquares(self, player, square, isAbleToFinish):
-        """ returns square on board that comes after current one. returns list because multiple squares are possible: go to finish or continue another round """
-        nextSquares=[]
-        entrySquare = self.data.playerSpecific.entrySquare[player]
-
-        # check homesquares
-        if square in self.calc.getHomeSquares(player):
-            nextSquares.append(entrySquare)
-
-        # check ring
-        if square in range(64):
-            nextSquare = self.calc.overflow(square+1)
-            nextSquares.append(nextSquare)
-
-            if square == entrySquare and isAbleToFinish:
-                nextSquare = 64+16+4*player
-                nextSquares.append(nextSquare)
-
-        # check finish
-        finishSquares = self.calc.getFinishSquares(player)
-        if square in finishSquares[0:3]: # on one of first 3 finish squares
-            nextSquare = square +1
-            nextSquares.append(nextSquare)
-        if square == finishSquares[3]: # on last finish squares 
-            print("Reached end of Board")
-            pass # TODO: maybe delete if
-        return nextSquares
-
-    def tryNextSquare(self, player, square, movesLeft, isAbleToFinish, waypoints, possibleMoves):
-        if movesLeft == 0: # this square is accessible
-            possibleMoves.append(square)
-            self.data.marbles.waypoints = waypoints
-            movesLeft += 1
-            print("Found a square")
-            return possibleMoves
-        
-        # check if marble is blocking:
-        if self.data.board.squares[square] != -1 and movesLeft > 0: # a marble is blocking. it would be ok if this was the landing space (movesLeft == 1) TODO: check redundancy of movesleft>1
-            movesLeft += 1
-            print("A marble is in the way")
-            return possibleMoves
-        
-        movesLeft -= 1
-        for nextSquare in self.getNextSquares(player,square, isAbleToFinish):
-            waypoints.append(self.data.board.squaresXY[square])
-            self.tryNextSquare(player, nextSquare, movesLeft, isAbleToFinish, waypoints, possibleMoves)
-        movesLeft +=1
-        return possibleMoves
 
     def moveMarble(self, square):
         if self.data.board.squares[square] != -1: # square is already occupied
