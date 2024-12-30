@@ -2,6 +2,7 @@ import random
 import operator
 from classes import ANIMATION, DATA, CALC
 from methods import botHelp
+from bots import random as botRandom
 
 class Actions:
     def __init__(self, 
@@ -56,7 +57,7 @@ class Actions:
             if cardSelected < numberOfCardsInHand: # only select if card spot is not empty
                 self.rules.toggleSelectCard(cardSelected)
 
-    def botTurn(self, bots):
+    def botTurn(self):
         # preparation
         players = self.data.board.playerSequence
         activePlayer = self.calc.getActivePlayer()
@@ -67,11 +68,11 @@ class Actions:
         numberOfCardsInHand = [0,0,0,0]
         for player in players:
             numberOfCardsInHand[player] = len(self.data.cards.inHand[player])
-            for card in self.data.cards.inHand[player]:
+            for cardIndex in self.data.cards.inHand[player]:
                 if player != activePlayer:
-                    remainingPile.append(card.value) # add cards of other players to remaining pile since the bot doesn't know if they're in hand or in remaining pile
+                    remainingPile.append(cardIndex.value) # add cards of other players to remaining pile since the bot doesn't know if they're in hand or in remaining pile
                 else:
-                    cardsInHand.append(card.value) # add own cards to hand
+                    cardsInHand.append(cardIndex.value) # add own cards to hand
         # remaining pile to amount of each card
         remainingCards = [0] * 20 # 20 different cards [including 0]
         for cardValue in remainingPile:
@@ -89,17 +90,37 @@ class Actions:
 
         # bot decision
         # use bots."name".main()
-        cardIndex, marbleIndex, landingSquare = botRandom.main(players, marblesForBots, cardsInHand, numberOfCardsInHand, discardPile, remainingCards)
+        cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(players, marblesForBots, squares, cardsInHand, numberOfCardsInHand, discardPile, remainingCards)
+
+        # check validity of bot move
+        overWriteBotDecision = False
+
+        # check if discard flag is correct
+        # if any move is possible -> isDiscarding should be false. 
+        if isDiscarding == self.rules.isAnyMovePossible(): # false flag
+            overWriteBotDecision = True
+        # check if discard is possible
 
         # check if move is possible
-        self.data.marbles.currentlySelected = marble
-        self.data.cards.currentlySelected = card
+        marble = self.data.marbles.marbles[activePlayer][marbleIndex]
+        cardValue = cardsInHand[cardIndex]
+        possibleSquares = botHelp.getPossibleSquares(squares, marble.square, cardValue, activePlayer, marble.isAbleToFinish)
         self.rules.createProjectedSquares() # recreate possible moves
-        if square not in self.data.board.projectedSquares: # move is invalid
+        if landingSquare not in possibleSquares: # move is invalid
+            overWriteBotDecision = True
+        
+        if overWriteBotDecision:
             # make random move
-            print("Move is invalid")
-            pass
-        self.rules.moveMarble(square)
+            print("Move is invalid, falling back to random move")
+            cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(players, marblesForBots, squares, cardsInHand, numberOfCardsInHand, discardPile, remainingCards)
+
+        if not isDiscarding:
+            #preparing moveMarble()
+            self.data.marbles.currentlySelected = marbleIndex
+            self.data.cards.currentlySelected = cardIndex
+            self.rules.moveMarble(landingSquare)
+            self.data.board.selectedSquare = landingSquare
+        # rest of the move
         self.rules.discardCard()
         self.calc.updateBoard()
         self.rules.nextTurn()
