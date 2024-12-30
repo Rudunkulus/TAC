@@ -1,13 +1,4 @@
-# def getLandingSquares(board, marbleSquare, cardValue):
-#     landingSquares = [] # clear landing squares
-#     waypoints = [[],[]] # list of list because sometimes there are two options: continuing on ring [0] or go to finish [1]
-#     if self.data.cards.currentlySelected != -1 and self.data.marbles.currentlySelected != -1: # FS: project squares only if card and marble is selected
-#         card = self.calc.getActiveCard()
-#         marble = self.calc.getActiveMarble()
-#         player = self.calc.getActivePlayer()
-#         homeSquares = self.calc.getHomeSquares(player)
-#         possibleMoves = self.getPossibleMoves(marble, card, player, homeSquares)
-#         self.data.board.projectedSquares = possibleMoves
+
 
 def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:int, isAbleToFinish:bool):
     """ Return list of possible squares the given marble could reach with the given card.\n
@@ -19,13 +10,13 @@ def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:
         if cardValue in [1,13]: # different rules
             possibleSquares = [getEntrySquare(player)]
     else:
-        for nextSquare in getNextSquares(player, marbleSquare, isAbleToFinish):
+        for nextSquare in _getNextSquares(player, marbleSquare, isAbleToFinish):
             movesLeft = cardValue
             # waypoints = [[],[]] # first list for all moves on ring, second list for all moves in finish
-            tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares)
+            _tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares)
     return possibleSquares
 
-def tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbleToFinish:bool, possibleSquares:list[int]):
+def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbleToFinish:bool, possibleSquares:list[int]):
     """Recursive process of trying next squares until\n
     - another marble is in the way -> not valid\n
     - the end of the finish is reached -> not valid\n
@@ -43,12 +34,12 @@ def tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAble
         print("A marble is in the way")
         return possibleSquares
     
-    for nextSquare in getNextSquares(player, square, isAbleToFinish):
-        tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares)
+    for nextSquare in _getNextSquares(player, square, isAbleToFinish):
+        _tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares)
     movesLeft +=1
     return possibleSquares
 
-def getNextSquares(player:int, square:int, isAbleToFinish:bool)->list[int]:
+def _getNextSquares(player:int, square:int, isAbleToFinish:bool)->list[int]:
     """Return square on board that comes after current one.\n
     Return list because multiple squares are possible: go to finish or continue another round\n
     Most of the times it is only on entry, though"""
@@ -79,6 +70,56 @@ def getNextSquares(player:int, square:int, isAbleToFinish:bool)->list[int]:
         print("Reached end of Board")
         pass # TODO: maybe delete if
     return nextSquares
+
+def _getPreviousSquare(square:int)->int:
+    """Return the previous square.\n
+    Not a list because going backwards, there are no junctions"""
+    if square > 63: # in player specific territory
+        player = getOwner(square)
+        finishSquares = getFinishSquares(player)
+        if square == finishSquares[0]: # first square of finish
+            return getEntrySquare(player)
+        if square in finishSquares[1:4]: # not the first square of finish
+            return square-1
+    return saturate(square-1)
+
+def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->list[int]:
+    """ return list of squares that marble travels on\n
+    from one square to another including the end square """
+    player = -1
+    # check domain of landingSquare:
+    if endSquare > 63 and endSquare < 80: # endSquare in base -> not possible
+        print("ERROR: end square in home squares -> not possible")
+        return []
+
+    # find the player if any square is player specific:
+    if startSquare > 63:
+        if endSquare > 79:
+            if getOwner(startSquare) != getOwner(endSquare): # start and end in different players home/finish
+                print("ERROR: start square and end square are in different player's home/finish")
+                return []
+        else:
+            player = getOwner(startSquare)
+    else:
+        if endSquare > 79:
+            player = getOwner(endSquare)
+
+    if startSquare in getHomeSquares(player):
+        return getEntrySquare(player) # just return entry square. This case shouldn't be possible going backwards, so no extra check needed
+    
+    squaresBetween = []
+    if isMovingForwards:
+        square = endSquare
+        while square != startSquare:
+            squaresBetween.append(square)
+            square = _getPreviousSquare(square)
+        squaresBetween.reverse() # because we went backwards, the entries have to be reversed
+    else:
+        square = startSquare
+        while square != endSquare:
+            squaresBetween.append(square)
+            square = _getPreviousSquare(square)
+    return squaresBetween
 
 def saturate(square:int)->int:
     """ saturates looping squares to [0,63]\n
@@ -119,7 +160,7 @@ def getHomeSquares(player:int)->list[int]:
         print("WARNING: player " + str(player) + " exceeded domain (0-3). Returning empty list")
         return []
 
-def getFinishSquares(player)->list[int]:
+def getFinishSquares(player:int)->list[int]:
     """Return list of all squares part of players finish. \n
     player must be a number between 0 and 3  """
     if player in range(4):
