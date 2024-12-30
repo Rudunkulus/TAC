@@ -1,4 +1,4 @@
-
+from classes import ANIMATION
 
 def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:int, isAbleToFinish:bool):
     """ Return list of possible squares the given marble could reach with the given card.\n
@@ -120,16 +120,6 @@ def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->li
             squaresBetween.append(square)
             square = _getPreviousSquare(square)
     return squaresBetween
-
-def getSquaresOfAllMarbles(squares:list[int])->list[list[int],list[int],list[int],list[int]]:
-    """return a list of lists with the square of each marble"""
-    marbles = [[],[],[],[]]
-    for square in range(len(squares)): # check each square
-        if squares[square] != -1: # occupied
-            player = squares[square]
-            marbles[player].append(square)
-    return marbles
-        
 
 def saturate(square:int)->int:
     """ saturates looping squares to [0,63]\n
