@@ -113,7 +113,7 @@ class Cards:
         self.remainingPile = []
         self.discardPileTopCard:ANIMATION.Card = [] # TODO: see if that works
         self.discardPile = []
-        self.inHand = [[],[],[],[]]
+        self.inHand = [[],[],[],[]] # TODO: switch to ([],[],[],[])
         self.currentlySelected = -1
     def __len__(self):
         return len(self.inHand)
@@ -124,7 +124,7 @@ class Cards:
 
 class Marbles:
     def __init__(self):
-        self.marbles = [[],[],[],[]]
+        self.marbles:ANIMATION.Marble = [[],[],[],[]] # TODO: switch to ([],[],[],[])
         self.currentlySelected = -1
         self.possibleWaypoints = [] # tupel list
     def __len__(self):
