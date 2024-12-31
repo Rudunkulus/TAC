@@ -111,7 +111,7 @@ class Board:
 class Cards:
     def __init__(self):
         self.remainingPile = []
-        self.discardPileTopCard = 0 # class
+        self.discardPileTopCard:ANIMATION.Card = [] # TODO: see if that works
         self.discardPile = []
         self.inHand = [[],[],[],[]]
         self.currentlySelected = -1
