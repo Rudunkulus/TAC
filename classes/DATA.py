@@ -1,4 +1,5 @@
 import math
+from classes import ANIMATION
 
 class Data:
     def __init__(self):
