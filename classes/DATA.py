@@ -1,4 +1,5 @@
 import math
+import pygame
 from classes import ANIMATION
 
 class Data:
@@ -8,6 +9,7 @@ class Data:
         self.constants = _Constants(self.parameters.width, self.parameters.height)
         self.board = _Board()
         self.cards = _Cards()
+        self.fonts = _Fonts()
         self.marbles = _Marbles()
         self.colours = {
             "black": (0,0,0,0),
@@ -118,6 +120,12 @@ class _Cards:
         self.currentlySelected = -1
     def __len__(self):
         return len(self.inHand)
+
+class _Fonts:
+    def __init__(self):
+        self.card = 0
+    def initFonts(self):
+        self.card = pygame.font.SysFont('Comic Sans MS', 70)
 
 # class Images:
 #     def __init__(self):
