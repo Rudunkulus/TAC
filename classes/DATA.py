@@ -4,11 +4,11 @@ from classes import ANIMATION
 class Data:
     def __init__(self):
         # self.animation = ANIMATION
-        self.parameters = Parameters()
-        self.constants = Constants(self.parameters.width, self.parameters.height)
-        self.board = Board()
-        self.cards = Cards()
-        self.marbles = Marbles()
+        self.parameters = _Parameters()
+        self.constants = _Constants(self.parameters.width, self.parameters.height)
+        self.board = _Board()
+        self.cards = _Cards()
+        self.marbles = _Marbles()
         self.colours = {
             "black": (0,0,0,0),
             "red": (255,0,0,0),
@@ -19,10 +19,10 @@ class Data:
             "grey": (180,180,180,0),
             "wood": (186, 140, 99)
             }
-        self.playerSpecific = PlayerSpecific(self.colours)
-        self.text = Text()
+        self.playerSpecific = _PlayerSpecific(self.colours)
+        self.text = _Text()
 
-class Parameters:
+class _Parameters:
     def __init__(self):
         self.width, self.height = 1740, 900
         self.FPS = 60
@@ -33,20 +33,20 @@ class Parameters:
         # self.amountPerCardType = [0,9,7,7,7,7,7,8,7,7,7,0,7,9,7,4,1,1,1,1] # all cards
         # self.amountPerCardType = [0,9,0,0,0,0,0,0,0,0,0,0,0,9] # for testing: only 1 & 13
 
-class Constants:
+class _Constants:
     def __init__(self, width, height):
         baseUnit = height/2/15 # 3*4unit triangles + 1*2 unit circle + 1*1 unit border = 15 units per radius
         self.xCenter = width / 2
         self.yCenter =  height / 2
 
-        self.board = ConstantsBoard(baseUnit)
-        self.cards = ConstantsCards(baseUnit, self.xCenter, self.yCenter, self.board.centerRadius)
-        self.marbles = ConstantsMarbles(self.board.squareRadius)
+        self.board = _ConstantsBoard(baseUnit)
+        self.cards = _ConstantsCards(baseUnit, self.xCenter, self.yCenter, self.board.centerRadius)
+        self.marbles = _ConstantsMarbles(self.board.squareRadius)
 
         self.lineThickness = max(int(0.1 * self.board.squareRadius),1) #at least 1
         self.lineThicknessThick = 5 * self.lineThickness
 
-class ConstantsBoard:
+class _ConstantsBoard:
     def __init__(self, baseUnit):
         self.innerCircleRadius = 12 * baseUnit
         self.midCircleRadius = 13 * baseUnit
@@ -61,7 +61,7 @@ class ConstantsBoard:
         self.lengthTriangle = 4 * baseUnit
         self.heightTriangle = 2*math.sqrt(3) * baseUnit
 
-class ConstantsCards:
+class _ConstantsCards:
     def __init__(self, baseUnit, xCenter, yCenter, centerRadius):
         # card
         self.width = 2.5 * baseUnit
@@ -94,12 +94,12 @@ class ConstantsCards:
         # self.handY = yCenter + centerRadius + baseUnit
         # self.handX -> dynamic
 
-class ConstantsMarbles:
+class _ConstantsMarbles:
     def __init__(self, squareRadius):
         self.speed = 5
         self.radius = 0.8 * squareRadius
 
-class Board:
+class _Board:
     def __init__(self):
         self.squares = [-1] * (64 + 4*4 + 4*4) # 64 in ring + 4x 4 homes + 4x 4 finishes
         self.squaresXY = []
@@ -109,7 +109,7 @@ class Board:
         self.isDiscardingCards = False
         self.isActivePlayerABot = False
 
-class Cards:
+class _Cards:
     def __init__(self):
         self.remainingPile = []
         self.discardPileTopCard:ANIMATION.Card = [] # TODO: see if that works
@@ -123,7 +123,7 @@ class Cards:
 #     def __init__(self):
 #         self. background = image=pygame.image.load("man"+str(i+1)+".png")
 
-class Marbles:
+class _Marbles:
     def __init__(self):
         self.marbles:ANIMATION.Marble = [[],[],[],[]] # TODO: switch to ([],[],[],[])
         self.currentlySelected = -1
@@ -131,7 +131,7 @@ class Marbles:
     def __len__(self):
         return len(self.marbles)
     
-class PlayerSpecific:
+class _PlayerSpecific:
     def __init__(self, colours):
         self.x = [1, 1, -1, -1]
         self.y = [-1, 1, 1, -1]
@@ -139,7 +139,7 @@ class PlayerSpecific:
         self.colour = [colours["black"], colours["green"], colours["blue"], colours["red"]]
         # self.colour = [(255,255,0),(255,0,0),(0,0,255),(0,255,0)] # black red blue green
     
-class Text:
+class _Text:
     def __init__(self):
         self.cards = ("","1","2","3","4","5","6","7","8","9","10","11","12","13","Tr","TAC","Narr","Krieger","Engel", "Teufel") # 0 is for upside down cards
     
