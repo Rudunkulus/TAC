@@ -306,13 +306,15 @@ def _moveMarble(data:DATA.Data, square:int)->None:
     waypoints = botHelp.getSquaresBetween(startSquare, square)
 
     # create waypoints for marble to travel on
-    # x, y = data.board.squaresXY[square]
-    # if waypoints:
     for waypoint in waypoints:
         tupel = data.board.squaresXY[waypoint]
         marble.waypoints.append(tupel)
-    # marble.waypoints.append((x, y))
+    
     marble.square = square
+    if startSquare > 63 and startSquare < 80: # marble starts from home
+        marble.isAbleToFinish = False
+    else:
+        marble.isAbleToFinish = True
 
 def _removeMarble(data:DATA.Data, square:int)->None:
     # find marble that occupies square
