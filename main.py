@@ -1,13 +1,13 @@
 import pygame #GUI using pygame
 from classes import ACTIONS, CALC, DATA, DRAW
 from bots import *
-from methods import actions
+from methods import actions, draw
 # from classes import ANIMATION
 
 # animation = ANIMATION.Animation()
 data = DATA.Data()
 calc = CALC.Calc(data)
-draw = DRAW.Draw(data, calc)
+# draw = DRAW.Draw(data, calc)
 # actions = ACTIONS.Actions(data, calc)
 colours = {'blue':(0,0,255), }
 colours['blue']
@@ -28,7 +28,7 @@ actions.initRandomGame(data)
 
 while run:
     clock.tick(FPS)
-    draw.updateWindow(win)
+    draw.updateWindow(data, win)
 
     if data.board.isActivePlayerABot:
         # try:

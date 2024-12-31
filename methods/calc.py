@@ -72,22 +72,23 @@ def isXYInCenterCircle(data:DATA.Data, x, y):
 #         x,y = square2xy(marble.square)
 #     return x, y
 
-# def updateEntityMovement(entity):
-#     """ moves all entities that are not at their target loaction """
-#     distance = self.getDistanceToWayPoint(entity)
-#     if distance != -1: # still moving to next waypoints
-#         if distance > entity.vel:
-#             self.moveCloserToWaypoint(entity)
-#         else :# too close to current waypoint -> select next waypoint
-#             if len(entity.waypoints) > 1: # still wayoints after this one
-#                 entity.waypoints.pop(0)
-#                 self.moveCloserToWaypoint(entity)
-#             else: # reached target
-#                 (xTarget, yTarget) = entity.waypoints[0]
-#                 entity.x = xTarget
-#                 entity.y = yTarget
-#                 entity.waypoints = []
-#                 entity.vel = data.constants.cards.speedSlow # TODO: differentiate between marble and card
+def updateEntityMovement(data:DATA.Data, entity:ANIMATION.Card)->None:
+    """ moves all entities that are not at their target loaction \n
+    works for cards and marbles"""
+    distance = _getDistanceToWayPoint(entity)
+    if distance != -1: # still moving to next waypoints
+        if distance > entity.vel:
+            moveCloserToWaypoint(entity)
+        else :# too close to current waypoint -> select next waypoint
+            if len(entity.waypoints) > 1: # still wayoints after this one
+                entity.waypoints.pop(0)
+                moveCloserToWaypoint(entity)
+            else: # reached target
+                (xTarget, yTarget) = entity.waypoints[0]
+                entity.x = xTarget
+                entity.y = yTarget
+                entity.waypoints = []
+                entity.vel = data.constants.cards.speedSlow # TODO: differentiate between marble and card
 
 # def updateBoard(self):
 #     """ updates data.board.square with all marbles """
@@ -102,30 +103,30 @@ def isXYInCenterCircle(data:DATA.Data, x, y):
 #             data.board.squares[marble.square] = player
 #             # print(marble.square)
 
-# def moveCloserToWaypoint(entity):
-#     xCur, yCur = entity.x, entity.y
-#     distance = self.getDistanceToWayPoint(entity)
-#     (xTarget, yTarget) = entity.waypoints[0]
-#     dx = xTarget - xCur
-#     dy = yTarget - yCur
-#     v = min(entity.vel, distance)
-#     vx = dx * v / self.vectorLength(dx,dy)
-#     vy = dy * v / self.vectorLength(dx,dy)
-#     entity.x += vx
-#     entity.y += vy
+def moveCloserToWaypoint(entity:ANIMATION.Card):
+    xCur, yCur = entity.x, entity.y
+    distance = _getDistanceToWayPoint(entity)
+    (xTarget, yTarget) = entity.waypoints[0]
+    dx = xTarget - xCur
+    dy = yTarget - yCur
+    v = min(entity.vel, distance)
+    vx = dx * v / math.sqrt(dx**2+dy**2)
+    vy = dy * v / math.sqrt(dx**2+dy**2)
+    entity.x += vx
+    entity.y += vy
 
 
-# def getDistanceToWayPoint(entity):
-#     """ returns distance to current waypoint. returns -1 if no waypoint exists"""
-#     if entity.waypoints: # maybe redundant but better safe than sorry
-#         xCur, yCur = entity.x, entity.y
-#         (xTarget, yTarget) = entity.waypoints[0]
-#         dx = xTarget - xCur
-#         dy = yTarget - yCur
-#         distance = self.vectorLength(dx,dy)
-#         return distance
-#     else:
-#         return -1
+def _getDistanceToWayPoint(entity:ANIMATION.Card)->float:
+    """ returns distance to current waypoint.\n
+    returns -1 if no waypoint exists\n
+    works for cards and marbles"""
+    if entity.waypoints: # TODO: maybe redundant but better safe than sorry
+        xyCurrent = (entity.x, entity.y)
+        xyTarget = entity.waypoints[0]
+        distance = _getDistance(xyCurrent, xyTarget)
+        return distance
+    else:
+        return -1
 
 def getXYDrawnCard(data:DATA.Data, player:int, cardsInHand:int)->tuple:
     """Return the target position of newly drawn card depending on hand size and player"""
