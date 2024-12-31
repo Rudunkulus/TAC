@@ -23,10 +23,15 @@ def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbl
     - the move is valid -> return a non-empty list"""
     movesLeft -= 1
     if movesLeft == 0: # this square is accessible
-        possibleSquares.append(square)
-        movesLeft += 1
-        print("Found a square")
-        return possibleSquares
+        if board[square] == -1 or square < 64: # if on ring, you can beat another marble
+            possibleSquares.append(square)
+            movesLeft += 1
+            print("Found a square")
+            return possibleSquares
+        else:
+            movesLeft += 1
+            print("can't kick marble outside of ring")
+            return possibleSquares
     
     # check if marble is blocking:
     if board[square] != -1 and movesLeft > 0: # a marble is blocking. it would be ok if this was the landing space (movesLeft == 1) TODO: check redundancy of movesleft>1
