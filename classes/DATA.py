@@ -1,4 +1,4 @@
-import numpy as np
+import math
 
 class Data:
     def __init__(self):
@@ -58,7 +58,7 @@ class ConstantsBoard:
         self.distanceInHome = 0.6 * baseUnit
 
         self.lengthTriangle = 4 * baseUnit
-        self.heightTriangle = 2*float(np.sqrt(3)) * baseUnit
+        self.heightTriangle = 2*math.sqrt(3) * baseUnit
 
 class ConstantsCards:
     def __init__(self, baseUnit, xCenter, yCenter, centerRadius):
