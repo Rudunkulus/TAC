@@ -253,11 +253,6 @@ def _nextTurn(data:DATA.Data):
         _dealCards(data)
         _selectNextPlayer(data) # 2x selectNextPlayer because Dealer moves
 
-    if data.parameters.bots[calc.getActivePlayer(data)]: # current player is abot
-        data.board.isActivePlayerABot = True
-    else:
-        data.board.isActivePlayerABot = False
-
     # check if any move is possible
     if not _isAnyMovePossible(data):
         data.board.isDiscardingCards = True
@@ -409,5 +404,10 @@ def _createPlayerSequence(data:DATA.Data)->None:
         _selectNextPlayer(data)
 
 def _selectNextPlayer(data:DATA.Data)->None:
-    """pop first entry of playerSequence and appends it to last"""
+    """pop first entry of playerSequence and appends it to last\n
+    also set flag if the player is a bot """
     data.board.playerSequence.append(data.board.playerSequence.pop(0))
+    if data.parameters.bots[calc.getActivePlayer(data)]: # current player is abot
+        data.board.isActivePlayerABot = True
+    else:
+        data.board.isActivePlayerABot = False
