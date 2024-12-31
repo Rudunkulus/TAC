@@ -6,6 +6,10 @@ def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:
     print("Using new method")
     possibleSquares = []
     homeSquares = getHomeSquares(player)
+    if cardValue == 7:
+        isCardASeven = True
+    else:
+        isCardASeven = False
     if marbleSquare in homeSquares:
         if cardValue in [1,13]: # different rules
             possibleSquares = [getEntrySquare(player)]
@@ -13,10 +17,10 @@ def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:
         for nextSquare in _getNextSquares(player, marbleSquare, isAbleToFinish):
             movesLeft = cardValue
             # waypoints = [[],[]] # first list for all moves on ring, second list for all moves in finish
-            _tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares)
+            _tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares, isCardASeven)
     return possibleSquares
 
-def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbleToFinish:bool, possibleSquares:list[int]):
+def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbleToFinish:bool, possibleSquares:list[int], isCardASeven:bool=False):
     """Recursive process of trying next squares until\n
     - another marble is in the way -> not valid\n
     - the end of the finish is reached -> not valid\n
@@ -36,11 +40,16 @@ def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbl
     # check if marble is blocking:
     if board[square] != -1 and movesLeft > 0: # a marble is blocking. it would be ok if this was the landing space (movesLeft == 1) TODO: check redundancy of movesleft>1
         movesLeft += 1
+        if isCardASeven:
+            possibleSquares.append(square)
         print("A marble is in the way")
         return possibleSquares
     
+    if isCardASeven:
+        possibleSquares.append(square)
+    
     for nextSquare in _getNextSquares(player, square, isAbleToFinish):
-        _tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares)
+        _tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares, isCardASeven)
     movesLeft +=1
     return possibleSquares
 
