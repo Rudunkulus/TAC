@@ -71,16 +71,34 @@ def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
     #########################################################################################################################################################
 
     # make random valid move
+    if botData.isForcedToSkipTurn:
+        return 0, 0, 0, True # discard first card
     currentPlayer = botData.players[0] # currentPlayer
     marblesOfPlayer = botData.marbles[currentPlayer]
-    for cardIndex in range(len(botData.cardsInHand)):
+    if not botData.isPlayingASeven:
+        for cardIndex in range(len(botData.cardsInHand)):
+            for marbleIndex in range(len(marblesOfPlayer)):
+                # check if combination is valid
+                cardValue = botData.cardsInHand[cardIndex]
+                marble = marblesOfPlayer[marbleIndex]
+                possibleSquares = botHelp.getPossibleSquares(botData.squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish, cardValue==7)
+                if possibleSquares: # takes first possible combination
+                    print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
+                    return cardIndex, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
+        # tried all combinations but no valid move found -> discard first card
+        return 0, 0, 0, True
+    else:
         for marbleIndex in range(len(marblesOfPlayer)):
             # check if combination is valid
-            cardValue = botData.cardsInHand[cardIndex]
+            cardValue = botData.remainderOfSeven
             marble = marblesOfPlayer[marbleIndex]
-            possibleSquares = botHelp.getPossibleSquares(botData.squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish)
+            if cardValue == 7 or botData.isPlayingASeven:
+                isPlayingASeven = True
+            else:
+                isPlayingASeven = False
+            possibleSquares = botHelp.getPossibleSquares(botData.squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish, isPlayingASeven)
             if possibleSquares: # takes first possible combination
                 print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
-                return cardIndex, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
-    # tried all combinations but no valid move found -> discard first card
-    return 0, marbleIndex, 0, True
+                return 0, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
+        # tried all combinations but no valid move found -> discard first card
+        return 0, 0, 0, True

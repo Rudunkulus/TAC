@@ -173,3 +173,4 @@ class BotData:
         self.remainingCards = [] # list[int]
         self.isForcedToSkipTurn = False
         self.isPlayingASeven = False
+        self.remainderOfSeven = 0

@@ -121,8 +121,10 @@ def botTurn(data:DATA.Data):
     botData.remainingCards = remainingCards
     if data.board.remainderOfPlayedSeven > 0:
         botData.isPlayingASeven = True
+        botData.remainderOfSeven = data.board.remainderOfPlayedSeven
     else:
         botData.isPlayingASeven = False
+        botData.remainderOfSeven = 0
     botData.isForcedToSkipTurn = data.board.isForcedToSkip
 
     # bot decision
@@ -140,7 +142,10 @@ def botTurn(data:DATA.Data):
 
     # check if move is possible
     marble = data.marbles.marbles[activePlayer][marbleIndex]
-    cardValue = cardsInHand[cardIndex]
+    if data.board.remainderOfPlayedSeven > 0:
+        cardValue = data.board.remainderOfPlayedSeven
+    else:
+        cardValue = cardsInHand[cardIndex]
     possibleSquares = botHelp.getPossibleSquares(squares, marble.square, cardValue, activePlayer, marble.isAbleToFinish)
     _createProjectedSquares(data) # recreate possible moves
     if landingSquare not in possibleSquares: # move is invalid
@@ -156,12 +161,13 @@ def botTurn(data:DATA.Data):
         data.marbles.currentlySelected = marbleIndex
         data.cards.currentlySelected = cardIndex
         _moveMarble(data, landingSquare)
-        if data.board.remainderOfPlayedSeven > 0:
-            #TODO: bot handling 7
-            data.board.remainderOfPlayedSeven = 0
+        # if data.board.remainderOfPlayedSeven > 0:
+        #     #TODO: bot handling 7
+        #     data.board.remainderOfPlayedSeven = 0
         data.board.selectedSquare = landingSquare
     # rest of the move
-    _discardCard(data)
+    if data.board.remainderOfPlayedSeven == 0:
+        _discardCard(data)
     _updateSquares(data)
     _nextTurn(data)
     return
