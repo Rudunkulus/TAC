@@ -22,7 +22,7 @@ def initSpecificSituation(data:DATA.Data):
     #create marbles player 1
     for square in [68,13,50,32]:
         marble = ANIMATION.Marble() # create marble
-        marble.x, marble.y = calc.square2xy(data, square)
+        marble.x, marble.y = data.board.squaresXY[square]
         marble.colour = data.colours["green"]
         marble.owner = 1
         marble.square = square
@@ -31,7 +31,7 @@ def initSpecificSituation(data:DATA.Data):
     #create marbles player 3
     for square in [76,18,53,63]:
         marble = ANIMATION.Marble() # create marble
-        marble.x, marble.y = calc.square2xy(data,square)
+        marble.x, marble.y = data.board.squaresXY[square]
         marble.colour = data.colours["red"]
         marble.owner = 3
         marble.square = square
