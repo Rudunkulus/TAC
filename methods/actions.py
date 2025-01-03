@@ -143,7 +143,7 @@ def botTurn(data:DATA.Data):
     if overWriteBotDecision:
         # make random move
         print("Move is invalid, falling back to random move")
-        cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(players, marblesForBots, squares, cardsInHand, numberOfCardsInHand, discardPile, remainingCards)
+        cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(botData)
 
     if not isDiscarding:
         #preparing moveMarble()
