@@ -15,7 +15,7 @@ def initGame(data:DATA.Data):
     # nextTurn()
 
 def initSpecificSituation(data:DATA.Data):
-    data.cards.remainingPile = [1,1,7,7,8,8,13,13,7,7,7,7,7,7,7]
+    data.cards.remainingPile = [1,10,7,7,8,8,13,13,7,7,7,7,7,7,7]
     data.board.playerSequence = [1,3]
     _dealCards(data)
     _createSquaresXY(data)
@@ -29,7 +29,7 @@ def initSpecificSituation(data:DATA.Data):
         data.marbles.marbles[1].append(marble) # store marble
 
     #create marbles player 3
-    for square in [76,18,53,63]:
+    for square in [53,76,18,63]:
         marble = ANIMATION.Marble() # create marble
         marble.x, marble.y = data.board.squaresXY[square]
         marble.colour = data.colours["red"]
