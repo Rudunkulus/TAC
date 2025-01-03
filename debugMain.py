@@ -1,7 +1,7 @@
 import pygame #GUI using pygame
 from classes import DATA
 from bots import *
-from methods import actions, draw, calc
+from methods import actions, draw, debug
 # from classes import ANIMATION
 
 # animation = ANIMATION.Animation()
@@ -22,21 +22,10 @@ run=True
 actions.initSpecificSituation(data)
 draw.waitForAnimation(data, win, clock)
 
-
-actions.keyPress(data, "2")
-draw.waitForAnimation(data, win, clock)
-x, y = data.board.squaresXY[13]
-actions.mouseClick(data, x, y) # select marble
-# draw.waitForAnimation(data, win, clock)
-x, y = data.board.squaresXY[18]
-actions.mouseClick(data, x, y) # select marble
-draw.waitForAnimation(data, win, clock)
-actions.mouseClick(data, x, y) # select marble
-draw.waitForAnimation(data, win, clock)
-
-
-# actions.keyPress(data, key)
-# actions.mouseClick(data, x_mouse,y_mouse)
-# actions.botTurn(data)
+debug.keyPress(data, win, clock, "2")
+debug.mouseClick(data, win, clock, 13)
+debug.mouseClick(data, win, clock, 18)
+debug.mouseClick(data, win, clock, 18)
+debug.mouseClick(data, win, clock, 20)
 
 pass
