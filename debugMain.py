@@ -25,10 +25,12 @@ draw.waitForAnimation(data, win, clock)
 
 actions.keyPress(data, "2")
 draw.waitForAnimation(data, win, clock)
-x, y = calc.square2xy(data, 13)
+x, y = data.board.squaresXY[13]
 actions.mouseClick(data, x, y) # select marble
 # draw.waitForAnimation(data, win, clock)
-x, y = calc.square2xy(data, 18)
+x, y = data.board.squaresXY[18]
+actions.mouseClick(data, x, y) # select marble
+draw.waitForAnimation(data, win, clock)
 actions.mouseClick(data, x, y) # select marble
 draw.waitForAnimation(data, win, clock)
 
