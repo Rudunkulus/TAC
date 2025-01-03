@@ -1,15 +1,15 @@
 from classes import ANIMATION
 
-def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:int, isAbleToFinish:bool):
+def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:int, isAbleToFinish:bool, isCardASeven=False):
     """ Return list of possible squares the given marble could reach with the given card.\n
     Return empty list if no move is possible with current combination"""
     print("Using new method")
     possibleSquares = []
     homeSquares = getHomeSquares(player)
-    if cardValue == 7:
-        isCardASeven = True
-    else:
-        isCardASeven = False
+    # if cardValue == 7:
+    #     isCardASeven = True
+    # else:
+    #     isCardASeven = False
     if marbleSquare in homeSquares:
         if cardValue in [1,13]: # different rules
             possibleSquares = [getEntrySquare(player)]

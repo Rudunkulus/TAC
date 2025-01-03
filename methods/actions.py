@@ -68,10 +68,14 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
         _nextTurn(data)
         return
     if card in range(5): # card in hand was selected
+        if data.board.remainderOfPlayedSeven > 0: # in the middle of playing a 7, cant select another card
+            return
         _toggleSelectCard(data, card)
 
 def keyPress(data:DATA.Data, key:str)->None:
     if key == "1" or key == "2" or key == "3" or key == "4" or key == "5":
+        if data.board.remainderOfPlayedSeven > 0: # in the middle of playing a 7, cant select another card
+            return
         cardSelected = int(key)-1 # key one based to zero based
         numberOfCardsInHand = len(data.cards.inHand[calc.getActivePlayer(data)])
         if cardSelected < numberOfCardsInHand: # only select if card spot is not empty
@@ -139,6 +143,9 @@ def botTurn(data:DATA.Data):
         data.marbles.currentlySelected = marbleIndex
         data.cards.currentlySelected = cardIndex
         _moveMarble(data, landingSquare)
+        if data.board.remainderOfPlayedSeven > 0:
+            #TODO: bot handling 7
+            data.board.remainderOfPlayedSeven = 0
         data.board.selectedSquare = landingSquare
     # rest of the move
     _discardCard(data)
@@ -267,23 +274,25 @@ def _toggleSelectCard(data:DATA.Data, cardSelected:int)->None:
 
 def _nextTurn(data:DATA.Data):
     # update board
-    data.cards.currentlySelected = -1
+    if data.board.remainderOfPlayedSeven == 0: # keep 7 selected if still moves remaining
+        data.cards.currentlySelected = -1
     data.marbles.currentlySelected = -1
     data.board.squares[data.board.selectedSquare] = -1
     data.board.selectedSquare = -1
     data.board.projectedSquares = []
     data.board.isDiscardingCards = False
 
-    _selectNextPlayer(data)
-    # check if no more cards in players hand
-    if not data.cards.inHand[calc.getActivePlayer(data)]:
-        _dealCards(data)
-        _selectNextPlayer(data) # 2x selectNextPlayer because Dealer moves
+    if data.board.remainderOfPlayedSeven == 0: # keep playing while still some of 7 left
+        _selectNextPlayer(data)
+        # check if no more cards in players hand
+        if not data.cards.inHand[calc.getActivePlayer(data)]:
+            _dealCards(data)
+            _selectNextPlayer(data) # 2x selectNextPlayer because Dealer moves
 
-    # check if any move is possible
-    if not _isAnyMovePossible(data):
-        data.board.isDiscardingCards = True
-        print("No move possible. Your are now discarding cards")
+        # check if any move is possible
+        if not _isAnyMovePossible(data):
+            data.board.isDiscardingCards = True
+            print("No move possible. Your are now discarding cards")
 
     # # TODO: set positions for cards of new player
     # handSizeOfActivePlayer = len(data.cards.inHand[calc.activePlayer()])
@@ -310,10 +319,18 @@ def _createProjectedSquares(data:DATA.Data):
     # data.marbles.waypoints = []
     if data.cards.currentlySelected != -1 and data.marbles.currentlySelected != -1: # FS: project squares only if card and marble is selected
         card:ANIMATION.Card = calc.getActiveCard(data)
+        cardValue = card.value
         marble:ANIMATION.Marble = calc.getActiveMarble(data)
         player = calc.getActivePlayer(data)
         # homeSquares = botHelp.getHomeSquares(player)
-        possibleMoves = botHelp.getPossibleSquares(data.board.squares, marble.square, card.value, player, marble.isAbleToFinish)
+
+        if data.board.remainderOfPlayedSeven > 0: # in the middle of playing a 7
+            cardValue = data.board.remainderOfPlayedSeven # overwrite card value with remaining value
+        if data.board.remainderOfPlayedSeven > 0 or cardValue == 7:
+            isCardASeven = True
+        else:
+            isCardASeven = False
+        possibleMoves = botHelp.getPossibleSquares(data.board.squares, marble.square, cardValue, player, marble.isAbleToFinish, isCardASeven)
         # possibleMoves = getPossibleMoves(marble, card, player, homeSquares)
         data.board.projectedSquares = possibleMoves
 
@@ -331,6 +348,13 @@ def _moveMarble(data:DATA.Data, square:int)->None:
     for waypoint in waypoints:
         tupel = data.board.squaresXY[waypoint]
         marble.waypoints.append(tupel)
+
+    if calc.getActiveCard(data).value == 7:
+        if data.board.remainderOfPlayedSeven == 0: #first move of the 7
+            data.board.remainderOfPlayedSeven = 7 - len(marble.waypoints)
+        else:
+            data.board.remainderOfPlayedSeven = data.board.remainderOfPlayedSeven - len(marble.waypoints)
+        print(data.board.remainderOfPlayedSeven)
     
     marble.square = square
     if startSquare > 63 and startSquare < 80: # marble starts from home

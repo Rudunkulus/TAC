@@ -111,6 +111,7 @@ class _Board:
         self.playerSequence = []
         self.isDiscardingCards = False
         self.isActivePlayerABot = False
+        self.remainderOfPlayedSeven = 0
 
 class _Cards:
     def __init__(self):
