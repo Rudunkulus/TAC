@@ -165,7 +165,7 @@ def _drawCardEntity(data:DATA.Data, win, card):
     else:
         textColour = data.colours["black"]
     if card.isShowingValue:
-        text = str(card.value)
+        text = str(data.text.cards[card.value])
     else:
         text = ""
 
