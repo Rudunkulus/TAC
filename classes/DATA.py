@@ -21,6 +21,7 @@ class Data:
             "grey": (180,180,180,0),
             "wood": (186, 140, 99)
             }
+        self.isAnyEntityStillMoving = False
         self.playerSpecific = _PlayerSpecific(self.colours)
         self.text = _Text()
 

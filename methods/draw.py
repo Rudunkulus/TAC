@@ -233,3 +233,9 @@ def _drawMarbles(data:DATA.Data, win):
 # def drawCircleOutline(data:DATA.Data, win, square, colour):
 #     x,y = calc.square2xy(square)
 #     pygame.draw.circle(win, colour, (x,y), data.constants.board.squareRadius, data.constants.lineThickness)
+
+def waitForAnimation(data:DATA.Data, win, clock):
+    data.isAnyEntityStillMoving = True
+    while data.isAnyEntityStillMoving:
+        clock.tick(data.parameters.FPS)
+        updateWindow(data, win)

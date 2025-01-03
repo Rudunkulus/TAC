@@ -77,6 +77,7 @@ def updateEntityMovement(data:DATA.Data, entity:ANIMATION.Card)->None:
     works for cards and marbles"""
     distance = _getDistanceToWayPoint(entity)
     if distance != -1: # still moving to next waypoints
+        data.isAnyEntityStillMoving = True
         if distance > entity.vel:
             moveCloserToWaypoint(entity)
         else :# too close to current waypoint -> select next waypoint
