@@ -54,7 +54,8 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
     if square != -1 and not data.board.isDiscardingCards: # selected square
         if square in data.board.projectedSquares: # selected projected square
             _moveMarble(data, square)
-            _discardCard(data)
+            if data.board.remainderOfPlayedSeven == 0:
+                _discardCard(data)
             _nextTurn(data)
             _updateSquares(data)
             return
