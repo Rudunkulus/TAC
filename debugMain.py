@@ -27,5 +27,8 @@ debug.mouseClick(data, win, clock, 13)
 debug.mouseClick(data, win, clock, 18)
 debug.mouseClick(data, win, clock, 18)
 debug.mouseClick(data, win, clock, 20)
+debug.botTurn(data, win, clock)
+debug.mouseClick(data, win, clock, 50)
+debug.keyPress(data, win, clock, "2")
 
 pass
