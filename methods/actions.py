@@ -132,6 +132,7 @@ def botTurn(data:DATA.Data):
         botData.isPlayingASeven = True
     else:
         botData.isPlayingASeven = False
+    botData.isForcedToSkipTurn = data.board.isForcedToSkip
 
     # bot decision
     # use bots."name".main()
