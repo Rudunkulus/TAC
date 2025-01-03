@@ -159,3 +159,15 @@ class Static:
         self._attribute = [1,2,3]
     def getAttribute(self):
         return self._attribute
+    
+class BotData:
+    def __init__(self):
+        self.players = [] # list[int]
+        self.marbles = [[],[],[],[]] # list[list[class]]
+        self.squares = [] # list[int]
+        self.cardsInHand = [] # list[int]
+        self.numberOfCardsInHand = 0 # int
+        self.discardPile = [] # list[int]
+        self.remainingCards = [] # list[int]
+        self.isForcedToSkipTurn = False
+        self.isPlayingASeven = False

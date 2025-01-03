@@ -1,15 +1,8 @@
 from methods import botHelp
-from classes import ANIMATION
+from classes import DATA
 
-def main(players:list[int],
-         marbles:list[ANIMATION.Marble],
-         squares:list[int],
-         cardsInHand:list[int],
-         numberOfCardsInHand:list[int],
-         discardPile:list[int],
-         remainingCards:list[int]
-         )->tuple[int,int,int, bool]:
-    """Return (cardIndex, marbleIndex, landingSquare)"""
+def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
+    """Return (cardIndex, marbleIndex, landingSquare, isDiscarding)"""
     cardIndex = 0
     marbleIndex = 0
     landingSquare = 0

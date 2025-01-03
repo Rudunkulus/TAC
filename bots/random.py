@@ -1,15 +1,8 @@
 from methods import botHelp
-from classes import ANIMATION
+from classes import DATA
 
-def main(players:list[int],
-         marbles:list[ANIMATION.Marble],
-         squares:list[int],
-         cardsInHand:list[int],
-         numberOfCardsInHand:list[int],
-         discardPile:list[int],
-         remainingCards:list[int]
-         )->tuple[int,int,int, bool]:
-    """Return (cardIndex, marbleIndex, landingSquare)"""
+def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
+    """Return (cardIndex, marbleIndex, landingSquare, isDiscarding)"""
     cardIndex = 0
     marbleIndex = 0
     landingSquare = 0
@@ -82,14 +75,14 @@ def main(players:list[int],
     #########################################################################################################################################################
 
     # make random valid move
-    currentPlayer = players[0] # currentPlayer
-    marblesOfPlayer = marbles[currentPlayer]
-    for cardIndex in range(len(cardsInHand)):
+    currentPlayer = botData.players[0] # currentPlayer
+    marblesOfPlayer = botData.marbles[currentPlayer]
+    for cardIndex in range(len(botData.cardsInHand)):
         for marbleIndex in range(len(marblesOfPlayer)):
             # check if combination is valid
-            cardValue = cardsInHand[cardIndex]
+            cardValue = botData.cardsInHand[cardIndex]
             marble = marblesOfPlayer[marbleIndex]
-            possibleSquares = botHelp.getPossibleSquares(squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish)
+            possibleSquares = botHelp.getPossibleSquares(botData.squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish)
             if possibleSquares: # takes first possible combination
                 print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
                 return cardIndex, marbleIndex, possibleSquares[0], False # take first square if multiple are possible

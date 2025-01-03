@@ -81,6 +81,7 @@ def keyPress(data:DATA.Data, key:str)->None:
 
 def botTurn(data:DATA.Data):
     # preparation
+    botData = DATA.BotData()
     players = data.board.playerSequence
     activePlayer = calc.getActivePlayer(data)
     cardsInHand = []
@@ -110,9 +111,17 @@ def botTurn(data:DATA.Data):
             marbleForBots.isAbleToFinish = marble.isAbleToFinish
             marblesForBots[player].append(marbleForBots)
 
+    # store in botData
+    botData.players = players
+    botData.marbles = marblesForBots
+    botData.squares = cardsInHand
+    botData.numberOfCardsInHand = numberOfCardsInHand
+    botData.discardPile = discardPile
+    botData.remainingCards = remainingCards
+
     # bot decision
     # use bots."name".main()
-    cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(players, marblesForBots, squares, cardsInHand, numberOfCardsInHand, discardPile, remainingCards)
+    cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(botData)
 
     # check validity of bot move
     overWriteBotDecision = False
