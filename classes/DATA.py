@@ -1,4 +1,3 @@
-from enum import Flag
 import math
 import pygame
 from classes import ANIMATION
