@@ -22,13 +22,13 @@ run=True
 actions.initSpecificSituation(data)
 draw.waitForAnimation(data, win, clock)
 
-debug.keyPress(data, win, clock, "2")
-debug.mouseClick(data, win, clock, 13)
-debug.mouseClick(data, win, clock, 18)
-debug.mouseClick(data, win, clock, 18)
-debug.mouseClick(data, win, clock, 20)
+debug.keyPress(data, win, clock, "3")
+debug.mouseClick(data, win, clock, 32)
+debug.mouseClick(data, win, clock, -1)
+debug.keyPress(data, win, clock, "3")
+debug.mouseClick(data, win, clock, -1)
+
+# templates
 debug.botTurn(data, win, clock)
 debug.mouseClick(data, win, clock, 50)
 debug.keyPress(data, win, clock, "2")
-
-pass
