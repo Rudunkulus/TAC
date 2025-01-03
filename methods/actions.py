@@ -39,8 +39,6 @@ def initSpecificSituation(data:DATA.Data):
     
     _updateSquares(data)
 
-
-
 def initRandomGame(data:DATA.Data):
     _createDeck(data)
     _createPlayerSequence(data)
