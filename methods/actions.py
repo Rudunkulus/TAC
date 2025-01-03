@@ -305,6 +305,7 @@ def _nextTurn(data:DATA.Data):
     data.board.selectedSquare = -1
     data.board.projectedSquares = []
     data.board.isDiscardingCards = False
+    data.cards.isEightSelected = False
 
     if data.board.remainderOfPlayedSeven == 0: # keep playing while still some of 7 left
         _selectNextPlayer(data)
