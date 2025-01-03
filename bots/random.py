@@ -3,10 +3,6 @@ from classes import DATA
 
 def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
     """Return (cardIndex, marbleIndex, landingSquare, isDiscarding)"""
-    cardIndex = 0
-    marbleIndex = 0
-    landingSquare = 0
-    isDiscarding = False
 
     ############################################################################################################################################################
     # players: players is a list of all players in order of sequence.
@@ -87,4 +83,4 @@ def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
                 print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
                 return cardIndex, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
     # tried all combinations but no valid move found -> discard first card
-    return 0, marbleIndex, landingSquare, True
+    return 0, marbleIndex, 0, True
