@@ -1,3 +1,4 @@
+from xmlrpc.client import Boolean
 from methods import botHelp
 from classes import DATA
 
@@ -70,35 +71,44 @@ def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
     # if the returned card exceeds its domain and no valid move is possible, a random card will be discarded
     #########################################################################################################################################################
 
-    # make random valid move
     if botData.isForcedToSkipTurn:
-        return 0, 0, 0, True # discard first card
+        discardCard(botData)
+    if botData.isPlayingASeven:
+        continuePlayedSeven(botData)
+    else:
+        playCard(botData)
+
+def playCard(botData:DATA.BotData):
     currentPlayer = botData.players[0] # currentPlayer
     marblesOfPlayer = botData.marbles[currentPlayer]
-    if not botData.isPlayingASeven:
-        for cardIndex in range(len(botData.cardsInHand)):
-            for marbleIndex in range(len(marblesOfPlayer)):
-                # check if combination is valid
-                cardValue = botData.cardsInHand[cardIndex]
-                marble = marblesOfPlayer[marbleIndex]
-                possibleSquares = botHelp.getPossibleSquares(botData.squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish, cardValue==7)
-                if possibleSquares: # takes first possible combination
-                    print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
-                    return cardIndex, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
-        # tried all combinations but no valid move found -> discard first card
-        return 0, 0, 0, True
-    else:
+    for cardIndex in range(len(botData.cardsInHand)):
         for marbleIndex in range(len(marblesOfPlayer)):
             # check if combination is valid
-            cardValue = botData.remainderOfSeven
+            cardValue = botData.cardsInHand[cardIndex]
             marble = marblesOfPlayer[marbleIndex]
-            if cardValue == 7 or botData.isPlayingASeven:
-                isPlayingASeven = True
-            else:
-                isPlayingASeven = False
-            possibleSquares = botHelp.getPossibleSquares(botData.squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish, isPlayingASeven)
+            possibleSquares = botHelp.getPossibleSquares(botData.squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish, cardValue==7)
             if possibleSquares: # takes first possible combination
                 print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
-                return 0, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
-        # tried all combinations but no valid move found -> discard first card
-        return 0, 0, 0, True
+                return cardIndex, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
+    discardCard(botData) # no valid move was found
+
+def discardCard(botData:DATA.BotData):
+    cardIndex = 0 # discard first card
+    return cardIndex, 0, 0, True # marbleIndex and landingSquare don't matter
+
+def continuePlayedSeven(botData:DATA.BotData):
+    currentPlayer = botData.players[0] # currentPlayer
+    marblesOfPlayer = botData.marbles[currentPlayer]
+    for marbleIndex in range(len(marblesOfPlayer)):
+        # check if combination is valid
+        cardValue = botData.remainderOfSeven
+        marble = marblesOfPlayer[marbleIndex]
+        if cardValue == 7 or botData.isPlayingASeven:
+            isPlayingASeven = True
+        else:
+            isPlayingASeven = False
+        possibleSquares = botHelp.getPossibleSquares(botData.squares, marble.square, cardValue, currentPlayer, marble.isAbleToFinish, isPlayingASeven)
+        if possibleSquares: # takes first possible combination
+            print("BOT decided following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[0]))
+            return 0, marbleIndex, possibleSquares[0], False # take first square if multiple are possible
+    discardCard(botData) # no valid move was found
