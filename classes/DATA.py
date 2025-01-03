@@ -1,3 +1,4 @@
+from enum import Flag
 import math
 import pygame
 from classes import ANIMATION
@@ -111,6 +112,7 @@ class _Board:
         self.playerSequence = []
         self.isDiscardingCards = False
         self.isActivePlayerABot = False
+        self.isForcedToSkip = False
         self.remainderOfPlayedSeven = 0
 
 class _Cards:
@@ -120,6 +122,7 @@ class _Cards:
         self.discardPile = []
         self.inHand = [[],[],[],[]] # TODO: switch to ([],[],[],[])
         self.currentlySelected = -1
+        self.isEightSelected = False
     def __len__(self):
         return len(self.inHand)
 

@@ -61,11 +61,19 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
             return
         if data.board.squares[square] == calc.getActivePlayer(data): # selected square with own marble
             _toggleSelectMarble(data, square)
-    if calc.isXYInCenterCircle(data, x, y) and data.board.isDiscardingCards and data.cards.currentlySelected != -1: # a card is selected for discard
-        _discardCard(data)
-        _updateSquares(data)
-        _nextTurn(data)
-        return
+    if calc.isXYInCenterCircle(data, x, y): # clicked in center circle
+        if (data.board.isDiscardingCards or data.board.isForcedToSkip) and data.cards.currentlySelected != -1: # forced to discard and a card is selected for discard
+            data.board.isForcedToSkip = False
+            _discardCard(data)
+            _updateSquares(data)
+            _nextTurn(data)
+            return
+        if data.cards.isEightSelected:
+            data.board.isForcedToSkip = True
+            _discardCard(data)
+            _updateSquares(data)
+            _nextTurn(data)
+            return
     if card in range(5): # card in hand was selected
         if data.board.remainderOfPlayedSeven > 0: # in the middle of playing a 7, cant select another card
             return
@@ -272,10 +280,15 @@ def _toggleSelectCard(data:DATA.Data, cardSelected:int)->None:
             card = calc.getActiveCard(data)
             card.isSelected = False # unselect old card
             card.waypoints = [(card.x, yNormal)] # lower card TODO: hard code x position
+            data.cards.isEightSelected = False
         data.cards.currentlySelected = cardSelected # store new seleection
         card = calc.getActiveCard(data) # active card has changed so request it again
         card.isSelected = True #select card
         card.waypoints = [(card.x, yRaised)] # raise card
+        if card.value == 8 and not data.board.isForcedToSkip:
+            data.cards.isEightSelected = True
+        else:
+            data.cards.isEightSelected = False
     else: # unselect a card
         card:ANIMATION.Card = calc.getActiveCard()
         card.isSelected = False # unselect card

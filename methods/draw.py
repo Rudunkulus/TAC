@@ -19,7 +19,8 @@ def updateWindow(data:DATA.Data, win):
 def _drawBoard(data:DATA.Data, win):
     xCenter = data.constants.xCenter
     yCenter = data.constants.yCenter
-    colourPlayer = data.playerSpecific.colour[calc.getActivePlayer(data)]
+    activePlayer = calc.getActivePlayer(data)
+    colourPlayer = data.playerSpecific.colour[activePlayer]
     black = data.colours["black"]
     white = data.colours["white"]
     grey = data.colours["grey"]
@@ -52,7 +53,7 @@ def _drawBoard(data:DATA.Data, win):
 
     # draw center circle
     pygame.draw.circle(win, white, (xCenter, yCenter), data.constants.board.centerRadius, 0) # filled white
-    if data.board.isDiscardingCards and data.cards.currentlySelected != -1:
+    if ((data.board.isDiscardingCards or data.board.isForcedToSkip) and data.cards.currentlySelected != -1) or (data.cards.isEightSelected):
         pygame.draw.circle(win, colourPlayer, (xCenter, yCenter), data.constants.board.centerRadius, lineThicknessThick)
     else:
         pygame.draw.circle(win, black, (xCenter, yCenter), data.constants.board.centerRadius, lineThickness)
