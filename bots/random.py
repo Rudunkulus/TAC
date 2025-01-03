@@ -1,4 +1,3 @@
-from xmlrpc.client import Boolean
 from methods import botHelp
 from classes import DATA
 
