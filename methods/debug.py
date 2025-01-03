@@ -9,3 +9,7 @@ def mouseClick(data:DATA.Data, win, clock, square:int):
 def keyPress(data:DATA.Data, win, clock, key:str):
     actions.keyPress(data, key)
     draw.waitForAnimation(data, win, clock)
+
+def botTurn(data:DATA.Data, win, clock):
+    actions.botTurn(data)
+    draw.waitForAnimation(data, win, clock)
