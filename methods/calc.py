@@ -72,7 +72,7 @@ def isXYInCenterCircle(data:DATA.Data, x, y):
 #         x,y = square2xy(marble.square)
 #     return x, y
 
-def updateEntityMovement(data:DATA.Data, entity:ANIMATION.Card)->None:
+def _updateEntityMovement(data:DATA.Data, entity:ANIMATION.Card)->None:
     """ moves all entities that are not at their target loaction \n
     works for cards and marbles"""
     distance = _getDistanceToWayPoint(entity)
