@@ -112,13 +112,18 @@ def botTurn(data:DATA.Data):
             marbleForBots.isAbleToFinish = marble.isAbleToFinish
             marblesForBots[player].append(marbleForBots)
 
-    # store in botData
+    # store in botData # TODO: clean up
     botData.players = players
     botData.marbles = marblesForBots
-    botData.squares = cardsInHand
+    botData.squares = squares
+    botData.cardsInHand = cardsInHand
     botData.numberOfCardsInHand = numberOfCardsInHand
     botData.discardPile = discardPile
     botData.remainingCards = remainingCards
+    if data.board.remainderOfPlayedSeven > 0:
+        botData.isPlayingASeven = True
+    else:
+        botData.isPlayingASeven = False
 
     # bot decision
     # use bots."name".main()
