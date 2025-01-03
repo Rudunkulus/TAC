@@ -167,17 +167,6 @@ def saturate(square:int)->int:
         square += 64
     return square
 
-def getMarble(players:list[int], marbles:list[list[int]], square:int)->tuple[int,int]:
-    """Return player and marble index of marble that is on given square.\n
-    Return None if square is empty"""
-    for player in players: # also check other players in case of trickster
-        index = 0
-        for marble in marbles[player]:
-            if marble.square == square:
-                return (player, index)
-            index += 1
-    return None
-
 def getOwner(square:int)->int:
     """Return the player who is the owner of the home/finish of the given square\n
     square must be between 64 and 95\n

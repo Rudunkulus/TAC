@@ -348,8 +348,7 @@ def _createProjectedSquares(data:DATA.Data):
         card:ANIMATION.Card = calc.getActiveCard(data)
         cardValue = card.value
         if cardValue == 14: # trickster
-            player, marbleIndex = botHelp.getMarble(data.board.playerSequence, data.marbles.marbles, data.board.selectedSquare)
-            marble:ANIMATION.Marble = data.marbles.marbles[player][marbleIndex]
+            marble:ANIMATION.Marble = calc.getMarble(data, data.board.selectedSquare)
         else:
             marble:ANIMATION.Marble = calc.getActiveMarble(data)
         player = calc.getActivePlayer(data)
