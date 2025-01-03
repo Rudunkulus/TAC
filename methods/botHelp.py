@@ -151,6 +151,13 @@ def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->li
             square = _getPreviousSquare(square)
     return squaresBetween
 
+def canPlayerPlaySpecialCards(board:list[int], player:int)->bool:
+    """Return True if player has at least one own marble on ring"""
+    for square in range(64):
+        if board[square] != player:
+            return True
+    return False
+
 def saturate(square:int)->int:
     """ saturates looping squares to [0,63]\n
      64 -> 0 and -1 -> 63 """
