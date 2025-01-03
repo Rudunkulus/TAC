@@ -1,16 +1,11 @@
 import pygame #GUI using pygame
-from classes import ACTIONS, CALC, DATA, DRAW
+from classes import DATA
 from bots import *
 from methods import actions, draw
 # from classes import ANIMATION
 
 # animation = ANIMATION.Animation()
 data = DATA.Data()
-calc = CALC.Calc(data)
-# draw = DRAW.Draw(data, calc)
-# actions = ACTIONS.Actions(data, calc)
-colours = {'blue':(0,0,255), }
-colours['blue']
 
 pygame.init()
 if data.parameters.allowResize:
@@ -42,11 +37,11 @@ while run:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             x_mouse, y_mouse = pygame.mouse.get_pos()
-            try:
-                actions.mouseClick(data, x_mouse,y_mouse)
-            except Exception as e: print(e)
+            # try:
+            #     actions.mouseClick(data, x_mouse,y_mouse)
+            # except Exception as e: print(e)
             
-            # actions.mouseClick(x_mouse,y_mouse)
+            actions.mouseClick(data, x_mouse,y_mouse)
 
         if event.type == pygame.KEYDOWN:
             key = pygame.key.name(event.key)
