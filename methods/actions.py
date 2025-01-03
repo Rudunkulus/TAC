@@ -57,8 +57,8 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
         if square in data.board.projectedSquares: # selected projected square
             _moveMarble(data, square)
             _discardCard(data)
-            _updateSquares(data)
             _nextTurn(data)
+            _updateSquares(data)
             return
         if data.board.squares[square] == calc.getActivePlayer(data): # selected square with own marble
             _toggleSelectMarble(data, square)
