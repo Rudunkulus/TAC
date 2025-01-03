@@ -238,4 +238,5 @@ def waitForAnimation(data:DATA.Data, win, clock):
     data.isAnyEntityStillMoving = True
     while data.isAnyEntityStillMoving:
         clock.tick(data.parameters.FPS)
+        data.isAnyEntityStillMoving = False
         updateWindow(data, win)
