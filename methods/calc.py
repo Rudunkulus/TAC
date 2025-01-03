@@ -186,6 +186,17 @@ def square2xy(data:DATA.Data, square:int)->tuple[int,int]:
 #     length = np.sqrt(dx**2+dy**2)
 #     return length
 
+def getMarble(data:DATA.Data, square:int)->ANIMATION.Marble:
+    """Return marble that is on given square.\n
+    Return None if square is empty"""
+    for player in data.board.playerSequence: # also check other players in case of trickster
+        index = 0
+        for marble in data.marbles.marbles[player]:
+            if marble.square == square:
+                return marble
+            index += 1
+    return None
+
 def getActiveMarble(data:DATA.Data)->ANIMATION.Marble:
     """ shortcut, returns currently selected marble as class.\n
     WARNING: make sure data.marbles.currentlySelected != -1 """

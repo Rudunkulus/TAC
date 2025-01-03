@@ -50,8 +50,10 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
             _nextTurn(data)
             _updateSquares(data)
             return
-        if data.board.squares[square] == calc.getActivePlayer(data): # selected square with own marble
+        # selected square with own marble or selected any marble if playing trickser:
+        if data.board.squares[square] == calc.getActivePlayer(data) or (calc.getActiveCard(data).value == 14 and data.board.squares[square] != -1):
             _toggleSelectMarble(data, square)
+            return
     if calc.isXYInCenterCircle(data, x, y): # clicked in center circle
         if (data.board.isDiscardingCards or data.board.isForcedToSkip) and data.cards.currentlySelected != -1: # forced to discard and a card is selected for discard
             data.board.isForcedToSkip = False
@@ -293,7 +295,7 @@ def _toggleSelectCard(data:DATA.Data, cardSelected:int)->None:
         y = data.constants.yCenter + data.playerSpecific.y[calc.getActivePlayer(data)] * data.constants.cards.yHandDistance
         card.waypoints = [(card.x, yNormal)] # lower card
         data.cards.currentlySelected = -1
-    if not data.board.isDiscardingCards:
+    if not data.board.isDiscardingCards and data.marbles.currentlySelected != -1:
         _createProjectedSquares(data) # only need to update if a move is possible
 
 def _nextTurn(data:DATA.Data):
@@ -342,10 +344,14 @@ def _isAnyMovePossible(data:DATA.Data):
 def _createProjectedSquares(data:DATA.Data):
     data.board.projectedSquares = [] # clear projected squares
     # data.marbles.waypoints = []
-    if data.cards.currentlySelected != -1 and data.marbles.currentlySelected != -1: # FS: project squares only if card and marble is selected
+    if (data.cards.currentlySelected != -1 and data.marbles.currentlySelected != -1) or calc.getActiveCard(data).value == 14: # FS: project squares only if card and marble is selected
         card:ANIMATION.Card = calc.getActiveCard(data)
         cardValue = card.value
-        marble:ANIMATION.Marble = calc.getActiveMarble(data)
+        if cardValue == 14: # trickster
+            player, marbleIndex = botHelp.getMarble(data.board.playerSequence, data.marbles.marbles, data.board.selectedSquare)
+            marble:ANIMATION.Marble = data.marbles.marbles[player][marbleIndex]
+        else:
+            marble:ANIMATION.Marble = calc.getActiveMarble(data)
         player = calc.getActivePlayer(data)
         # homeSquares = botHelp.getHomeSquares(player)
 
@@ -355,6 +361,10 @@ def _createProjectedSquares(data:DATA.Data):
             isCardASeven = True
         else:
             isCardASeven = False
+        # if cardValue == 14:
+        #     marbleSquare = data.marbles.currentlySelected
+        # else:
+        #     marbleSquare = marble.square
         possibleMoves = botHelp.getPossibleSquares(data.board.squares, marble.square, cardValue, player, marble.isAbleToFinish, isCardASeven)
         # possibleMoves = getPossibleMoves(marble, card, player, homeSquares)
         data.board.projectedSquares = possibleMoves
@@ -363,6 +373,19 @@ def _moveMarble(data:DATA.Data, square:int)->None:
     """ Move currently selected marble to square.\n
     If square is occupied, kick out occupier\n
     Reminder: data.marbles.currentlySelected needs to be set!"""
+    if calc.getActiveCard(data).value == 14: # trickser -> swap marbles
+        marble = calc.getMarble(data, data.board.selectedSquare) # selected marble
+        marble2 = calc.getMarble(data, square) # clicked marble
+        
+        marble.square = square
+        marble.waypoints.append(data.board.squaresXY[square])
+        marble.isAbleToFinish = True
+
+        marble2.square = data.board.selectedSquare
+        marble2.waypoints.append(data.board.squaresXY[data.board.selectedSquare])
+        marble2.isAbleToFinish = True
+        return
+
     if data.board.squares[square] != -1: # square is already occupied
         _removeMarble(data, square)
     marble:ANIMATION.Marble = calc.getActiveMarble(data)
@@ -421,13 +444,6 @@ def _toggleSelectMarble(data:DATA.Data, square):
         print("Marble Unselected")
     else: # select marble
         data.board.selectedSquare = square
-        # find index of marble that is on that square
-        index = 0
-        for x in data.marbles.marbles[calc.getActivePlayer(data)]:
-            if x.square == square:
-                # print(square)
-                data.marbles.currentlySelected = index
-            index += 1
         print("Marble Selected")
     _createProjectedSquares(data)
 

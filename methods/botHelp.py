@@ -9,10 +9,25 @@ def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:
     #     isCardASeven = True
     # else:
     #     isCardASeven = False
-    if marbleSquare in homeSquares:
-        if cardValue in [1,13]: # different rules
-            possibleSquares = [getEntrySquare(player)]
-    else:
+
+    # coming out of home
+    if marbleSquare in homeSquares and cardValue in [1,13]: # different rules
+        return [getEntrySquare(player)]
+    
+    if cardValue == 14: # trickser
+        if canPlayerPlaySpecialCards(board, player):
+            # find all squares on ring that are ocupied by a marble
+            for square in range(64):
+                if board[square] != -1 and square != marbleSquare:
+                    possibleSquares.append(square)
+            if len(possibleSquares) > 0: # need at least two marbles to trickser
+                return possibleSquares
+            else:
+                return []
+        else:
+            return []
+
+    if not marbleSquare in homeSquares: # normal move
         for nextSquare in _getNextSquares(player, marbleSquare, isAbleToFinish):
             movesLeft = cardValue
             # waypoints = [[],[]] # first list for all moves on ring, second list for all moves in finish
@@ -144,6 +159,17 @@ def saturate(square:int)->int:
     while square < 0:
         square += 64
     return square
+
+def getMarble(players:list[int], marbles:list[list[int]], square:int)->tuple[int,int]:
+    """Return player and marble index of marble that is on given square.\n
+    Return None if square is empty"""
+    for player in players: # also check other players in case of trickster
+        index = 0
+        for marble in marbles[player]:
+            if marble.square == square:
+                return (player, index)
+            index += 1
+    return None
 
 def getOwner(square:int)->int:
     """Return the player who is the owner of the home/finish of the given square\n
