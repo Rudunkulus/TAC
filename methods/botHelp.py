@@ -26,6 +26,8 @@ def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbl
     - the end of the finish is reached -> not valid\n
     - the move is valid -> return a non-empty list"""
     movesLeft -= 1
+    if movesLeft < 0:
+        print("ERROR in tryNextSquare(): movesLeft < 0")
     if movesLeft == 0: # this square is accessible
         if board[square] == -1 or square < 64: # if on ring, you can beat another marble
             possibleSquares.append(square)
