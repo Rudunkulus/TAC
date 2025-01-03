@@ -16,3 +16,5 @@ def keyPress(data:DATA.Data, win, clock, key:str):
 def botTurn(data:DATA.Data, win, clock):
     actions.botTurn(data)
     draw.waitForAnimation(data, win, clock)
+    if data.board.remainderOfPlayedSeven > 0:
+        botTurn(data, win, clock)

@@ -14,29 +14,20 @@ def initGame(data:DATA.Data):
     _updateSquares(data)
     # nextTurn()
 
-def initSpecificSituation(data:DATA.Data):
-    data.cards.remainingPile = [1,10,7,7,8,8,13,13,7,7,7,7,7,7,7]
-    data.board.playerSequence = [1,3]
+def initSpecificSituation(data:DATA.Data, playerSequence, squares, remainingPile):
+    data.cards.remainingPile = remainingPile
+    data.board.playerSequence = playerSequence
     _dealCards(data)
     _createSquaresXY(data)
-    #create marbles player 1
-    for square in [68,13,50,32]:
-        marble = ANIMATION.Marble() # create marble
-        marble.x, marble.y = data.board.squaresXY[square]
-        marble.colour = data.colours["green"]
-        marble.owner = 1
-        marble.square = square
-        data.marbles.marbles[1].append(marble) # store marble
-
-    #create marbles player 3
-    for square in [53,76,18,63]:
-        marble = ANIMATION.Marble() # create marble
-        marble.x, marble.y = data.board.squaresXY[square]
-        marble.colour = data.colours["red"]
-        marble.owner = 3
-        marble.square = square
-        data.marbles.marbles[3].append(marble) # store marble
-    
+    for player in playerSequence:
+        #create marbles player 1
+        for square in squares[player]:
+            marble = ANIMATION.Marble() # create marble
+            marble.x, marble.y = data.board.squaresXY[square]
+            marble.colour = data.playerSpecific.colour[player]
+            marble.owner = player
+            marble.square = square
+            data.marbles.marbles[player].append(marble) # store marble
     _updateSquares(data)
 
 def initRandomGame(data:DATA.Data):
