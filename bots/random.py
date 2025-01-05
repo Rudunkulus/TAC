@@ -71,11 +71,11 @@ def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
     #########################################################################################################################################################
 
     if botData.isForcedToSkipTurn:
-        discardCard(botData)
+        return discardCard(botData)
     if botData.isPlayingASeven:
-        continuePlayedSeven(botData)
+        return continuePlayedSeven(botData)
     else:
-        playCard(botData)
+        return playCard(botData)
 
 def playCard(botData:DATA.BotData):
     currentPlayer = botData.players[0] # currentPlayer
