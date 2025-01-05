@@ -1,4 +1,3 @@
-from inspect import indentsize
 from classes import ANIMATION
 
 def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:int, isAbleToFinish:bool, isCardASeven=False):
