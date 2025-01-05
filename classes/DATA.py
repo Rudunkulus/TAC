@@ -127,9 +127,8 @@ class _Cards:
 
 class _Fonts:
     def __init__(self):
-        self.card = 0
-    def initFonts(self):
-        self.card = pygame.font.SysFont('Comic Sans MS', 70)
+        self.card = ("Comic Sans MS", 70)
+        self.square = ('Comic Sans MS', 20)
 
 # class Images:
 #     def __init__(self):

@@ -5,7 +5,7 @@ from classes import DATA
 
 def init(data:DATA.Data):
     pygame.font.init()
-    data.fonts.initFonts()
+    # data.fonts.initFonts()
     # self.my_font = pygame.font.SysFont('Comic Sans MS', 70)
     # self.background = pygame.image.load(os.path.join('images', 'background.jpg'))
 
@@ -175,7 +175,7 @@ def _drawCardEntity(data:DATA.Data, win, card):
 
     pygame.draw.rect(win, (255,255,255), (x, y, data.constants.cards.width, data.constants.cards.height), 0, 10) # first cover with white
     pygame.draw.rect(win, (0,0,0), (x, y, data.constants.cards.width, data.constants.cards.height), data.constants.lineThickness, 10)
-    writeText(win, data.fonts.card, text, textColour, (x, y), 7)
+    _writeText(win, data.fonts.card, text, textColour, (x, y), 7)
     # win.blit(text_value, (x, y))
 
 def _drawCard(data:DATA.Data, win, x, y, text_surface, colour, isFilled):
@@ -184,11 +184,11 @@ def _drawCard(data:DATA.Data, win, x, y, text_surface, colour, isFilled):
     # win.blit(text_surface, (x, y))
     pygame.draw.rect(win, colour, (x, y, data.constants.cards.width, data.constants.cards.height), int(not isFilled), 10)
 
-def writeText(win, font, text:str, colour:tuple, xy:tuple[float,float], orientation:int)->None:
+def _writeText(win, font, text:str, colour:tuple, xy:tuple[float,float], orientation:int)->None:
     """Write the given Text in given font and colour at given coordinates.\n
     orientation describes the exact position relativ to xy in phone number keys:\n
     eg 7->top left, 6->right, 5->center"""
-    font = pygame.font.SysFont('Comic Sans MS', 70)
+    font = pygame.font.SysFont(font[0], font[1])
     text = font.render(text, True, colour)
     textRect = text.get_rect()
     match orientation:
