@@ -1,3 +1,4 @@
+from inspect import indentsize
 from classes import ANIMATION
 
 def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:int, isAbleToFinish:bool, isCardASeven=False):
@@ -166,6 +167,17 @@ def saturate(square:int)->int:
     while square < 0:
         square += 64
     return square
+
+def getMarbleIndex(marbles:list[list[ANIMATION.Marble]], square:int)->tuple[int,int]:
+    """Return player and marble index of marble that is on given square.\n
+    Return None if square is empty"""
+    for player in range(4): # always checks all for players. Advantage: don't have to inherit player variable
+        marbleIndex = 0
+        for marble in marbles[player]:
+            if marble.square == square:
+                return player, marbleIndex
+            marbleIndex += 1
+    return None
 
 def getOwner(square:int)->int:
     """Return the player who is the owner of the home/finish of the given square\n

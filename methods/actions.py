@@ -443,6 +443,7 @@ def _toggleSelectMarble(data:DATA.Data, square):
         print("Marble Unselected")
     else: # select marble
         data.board.selectedSquare = square
+        _, data.marbles.currentlySelected = botHelp.getMarbleIndex(data.marbles.marbles, square)
         print("Marble Selected")
     _createProjectedSquares(data)
 
