@@ -27,7 +27,7 @@ while run:
 
     if data.board.isActivePlayerABot:
         try:
-            actions.botTurn()
+            actions.botTurn(data)
         except Exception as e: print(e)
         # actions.botTurn(data)
 
