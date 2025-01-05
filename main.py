@@ -26,10 +26,10 @@ while run:
     draw.updateWindow(data, win)
 
     if data.board.isActivePlayerABot:
-        # try:
-        #     actions.botTurn()
-        # except Exception as e: print(e)
-        actions.botTurn(data)
+        try:
+            actions.botTurn()
+        except Exception as e: print(e)
+        # actions.botTurn(data)
 
     for event in pygame.event.get(): # Triggering the event
         if event.type == pygame.QUIT:
