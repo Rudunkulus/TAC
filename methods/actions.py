@@ -93,11 +93,11 @@ def botTurn(data:DATA.Data):
     numberOfCardsInHand = [0,0,0,0]
     for player in players:
         numberOfCardsInHand[player] = len(data.cards.inHand[player])
-        for cardIndex in data.cards.inHand[player]:
+        for card in data.cards.inHand[player]:
             if player != activePlayer:
-                remainingPile.append(cardIndex.value) # add cards of other players to remaining pile since the bot doesn't know if they're in hand or in remaining pile
+                remainingPile.append(card.value) # add cards of other players to remaining pile since the bot doesn't know if they're in hand or in remaining pile
             else:
-                cardsInHand.append(cardIndex.value) # add own cards to hand
+                cardsInHand.append(card.value) # add own cards to hand
     # remaining pile to amount of each card
     remainingCards = [0] * 20 # 20 different cards [including 0]
     for cardValue in remainingPile:
