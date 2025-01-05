@@ -27,6 +27,7 @@ def initSpecificSituation(data:DATA.Data, playerSequence, squares, remainingPile
             marble.colour = data.playerSpecific.colour[player]
             marble.owner = player
             marble.square = square
+            marble.isAbleToFinish = True
             data.marbles.marbles[player].append(marble) # store marble
     _updateSquares(data)
 
