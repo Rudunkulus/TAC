@@ -344,7 +344,7 @@ def _isAnyMovePossible(data:DATA.Data):
 def _createProjectedSquares(data:DATA.Data):
     data.board.projectedSquares = [] # clear projected squares
     # data.marbles.waypoints = []
-    if (data.cards.currentlySelected != -1 and data.marbles.currentlySelected != -1) or calc.getActiveCard(data).value == 14: # FS: project squares only if card and marble is selected
+    if (data.cards.currentlySelected != -1 and data.marbles.currentlySelected != -1) or (calc.getActiveCard(data).value == 14 and data.board.selectedSquare != -1): # FS: project squares only if card and marble is selected
         card:ANIMATION.Card = calc.getActiveCard(data)
         cardValue = card.value
         if cardValue == 14: # trickster
@@ -439,11 +439,13 @@ def _discardCard(data:DATA.Data)->None:
 def _toggleSelectMarble(data:DATA.Data, square):
     if square == data.board.selectedSquare: #unselect marble
         data.board.selectedSquare = -1
-        data.marbles.currentlySelected = -1
+        # data.marbles.currentlySelected = -1
         print("Marble Unselected")
     else: # select marble
         data.board.selectedSquare = square
-        _, data.marbles.currentlySelected = botHelp.getMarbleIndex(data.marbles.marbles, square)
+        owner, marbleIndex = botHelp.getMarbleIndex(data.marbles.marbles, data.board.selectedSquare)
+        if owner == calc.getActivePlayer(data):
+            data.marbles.currentlySelected = marbleIndex
         print("Marble Selected")
     _createProjectedSquares(data)
 
