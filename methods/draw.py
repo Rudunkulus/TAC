@@ -14,7 +14,13 @@ def updateWindow(data:DATA.Data, win):
     _drawCards(data, win)
     _drawMarbles(data, win)
     _drawProjectedSquares(data, win)
+    if data.parameters.debugShowSquareIndex: _labelSquares(data, win)
     pygame.display.update()
+
+def _labelSquares(data:DATA.Data, win):
+    for square in range(96):
+        x,y = data.board.squaresXY[square]
+        _writeText(win, data.fonts.square, str(square), data.colours["black"], (x,y), 5)
 
 def _drawBoard(data:DATA.Data, win):
     xCenter = data.constants.xCenter
