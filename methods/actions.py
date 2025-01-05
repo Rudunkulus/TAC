@@ -390,7 +390,11 @@ def _moveMarble(data:DATA.Data, square:int)->None:
         _removeMarble(data, square)
     marble:ANIMATION.Marble = calc.getActiveMarble(data)
     startSquare = marble.square
-    waypoints = botHelp.getSquaresBetween(startSquare, square)
+    if calc.getActiveCard(data).value == 4:
+        isMovingForwards = False
+    else:
+        isMovingForwards = True
+    waypoints = botHelp.getSquaresBetween(startSquare, square, isMovingForwards)
 
     # create waypoints for marble to travel on
     for waypoint in waypoints:

@@ -28,18 +28,43 @@ def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:
             return []
 
     if not marbleSquare in homeSquares: # normal move
-        for nextSquare in _getNextSquares(player, marbleSquare, isAbleToFinish):
-            movesLeft = cardValue
-            # waypoints = [[],[]] # first list for all moves on ring, second list for all moves in finish
-            _tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares, isCardASeven)
+        movesLeft = cardValue
+        originalCardValue = cardValue
+        if cardValue != 4:
+            for nextSquare in _getNextSquares(player, marbleSquare, isAbleToFinish):
+                _tryNextSquare(board, player, nextSquare, movesLeft-1, isAbleToFinish, possibleSquares, originalCardValue)
+        else:
+            _tryPreviousSquare(board, marbleSquare, cardValue, possibleSquares)
     return possibleSquares
 
-def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbleToFinish:bool, possibleSquares:list[int], isCardASeven:bool=False):
+def _tryPreviousSquare(board:list[int], square:int, movesLeft:int, possibleSquares:list[int]):
+    """Recursive process of trying previous squares until\n
+    - another marble is in the way -> not valid\n
+    - the move is valid -> return a non-empty list"""
+    if movesLeft < 0:
+        print("ERROR in tryNextSquare(): movesLeft < 0")
+    if movesLeft == 0: # this square is accessible
+        possibleSquares.append(square)
+        movesLeft += 1
+        print("Found a square")
+        return possibleSquares
+    
+    # check if marble is blocking:
+    if board[square] != -1 and movesLeft < 4: # a marble is blocking. it would be ok if this was the landing space (movesLeft == 1) TODO: check redundancy of movesleft>1
+        movesLeft += 1
+        print("A marble is in the way")
+        return possibleSquares
+    
+    previousSquare = _getPreviousSquare(square)
+    _tryPreviousSquare(board, previousSquare, movesLeft-1, possibleSquares)
+    movesLeft +=1
+    return possibleSquares
+
+def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbleToFinish:bool, possibleSquares:list[int], originalCardValue):
     """Recursive process of trying next squares until\n
     - another marble is in the way -> not valid\n
     - the end of the finish is reached -> not valid\n
     - the move is valid -> return a non-empty list"""
-    movesLeft -= 1
     if movesLeft < 0:
         print("ERROR in tryNextSquare(): movesLeft < 0")
     if movesLeft == 0: # this square is accessible
@@ -54,18 +79,18 @@ def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbl
             return possibleSquares
     
     # check if marble is blocking:
-    if board[square] != -1 and movesLeft > 0: # a marble is blocking. it would be ok if this was the landing space (movesLeft == 1) TODO: check redundancy of movesleft>1
+    if board[square] != -1 and movesLeft != originalCardValue-1: # a marble is blocking. it would be ok if this was the landing space (movesLeft == 1) TODO: check redundancy of movesleft>1
         movesLeft += 1
-        if isCardASeven:
+        if originalCardValue == 7:
             possibleSquares.append(square)
         print("A marble is in the way")
         return possibleSquares
     
-    if isCardASeven:
+    if originalCardValue == 7:
         possibleSquares.append(square)
     
     for nextSquare in _getNextSquares(player, square, isAbleToFinish):
-        _tryNextSquare(board, player, nextSquare, movesLeft, isAbleToFinish, possibleSquares, isCardASeven)
+        _tryNextSquare(board, player, nextSquare, movesLeft-1, isAbleToFinish, possibleSquares, originalCardValue)
     movesLeft +=1
     return possibleSquares
 
@@ -147,8 +172,8 @@ def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->li
     else:
         square = startSquare
         while square != endSquare:
-            squaresBetween.append(square)
             square = _getPreviousSquare(square)
+            squaresBetween.append(square)
     return squaresBetween
 
 def canPlayerPlaySpecialCards(board:list[int], player:int)->bool:
