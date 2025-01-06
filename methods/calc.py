@@ -72,18 +72,22 @@ def isXYInCenterCircle(data:DATA.Data, x, y):
 #         x,y = square2xy(marble.square)
 #     return x, y
 
-def _updateEntityMovement(data:DATA.Data, entity:ANIMATION.Card)->None:
+def updateEntityMovement(data:DATA.Data, entity:ANIMATION.Card)->None:
     """ moves all entities that are not at their target loaction \n
     works for cards and marbles"""
-    distance = _getDistanceToWayPoint(entity)
+    distance = _getDistanceToWaypoint(entity)
     if distance != -1: # still moving to next waypoints
         data.isAnyEntityStillMoving = True
-        if distance > entity.vel:
-            moveCloserToWaypoint(entity)
+        if _getDistanceToWaypoint(entity) > 10 * entity.vel: # if far away from final destination, triple speed
+            velocity = 3 * entity.vel
+        else:
+            velocity = entity.vel
+        if distance > velocity:
+            moveCloserToWaypoint(entity, velocity)
         else :# too close to current waypoint -> select next waypoint
             if len(entity.waypoints) > 1: # still wayoints after this one
                 entity.waypoints.pop(0)
-                moveCloserToWaypoint(entity)
+                moveCloserToWaypoint(entity, velocity)
             else: # reached target
                 (xTarget, yTarget) = entity.waypoints[0]
                 entity.x = xTarget
@@ -104,20 +108,20 @@ def _updateEntityMovement(data:DATA.Data, entity:ANIMATION.Card)->None:
 #             data.board.squares[marble.square] = player
 #             # print(marble.square)
 
-def moveCloserToWaypoint(entity:ANIMATION.Card):
+def moveCloserToWaypoint(entity:ANIMATION.Card, velocity:float):
     xCur, yCur = entity.x, entity.y
-    distance = _getDistanceToWayPoint(entity)
+    distance = _getDistanceToWaypoint(entity)
     (xTarget, yTarget) = entity.waypoints[0]
     dx = xTarget - xCur
     dy = yTarget - yCur
-    v = min(entity.vel, distance)
+    v = min(velocity, distance)
     vx = dx * v / math.sqrt(dx**2+dy**2)
     vy = dy * v / math.sqrt(dx**2+dy**2)
     entity.x += vx
     entity.y += vy
 
 
-def _getDistanceToWayPoint(entity:ANIMATION.Card)->float:
+def _getDistanceToWaypoint(entity:ANIMATION.Card)->float:
     """ returns distance to current waypoint.\n
     returns -1 if no waypoint exists\n
     works for cards and marbles"""

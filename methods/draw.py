@@ -175,7 +175,7 @@ def _drawCardEntity(data:DATA.Data, win, card):
     else:
         text = ""
 
-    calc._updateEntityMovement(data, card)
+    calc.updateEntityMovement(data, card)
     x = card.x - 0.5 * data.constants.cards.width
     y = card.y - 0.5 * data.constants.cards.height
 
@@ -226,7 +226,7 @@ def _drawMarbles(data:DATA.Data, win):
     # data.board.squares = [-1] * 64
     for player in data.board.playerSequence: # for each player
         for marble in data.marbles.marbles[player]: # for each marble of player
-            calc._updateEntityMovement(data, marble)
+            calc.updateEntityMovement(data, marble)
             x = marble.x
             y = marble.y
             # x,y = calc.getMarbleXY(marble)
