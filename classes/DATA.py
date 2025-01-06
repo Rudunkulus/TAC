@@ -28,7 +28,7 @@ class Data:
 class _Parameters:
     def __init__(self):
         self.width, self.height = 1740, 900
-        self.FPS = 60
+        self.FPS = 30
         self.allowResize = False
         self.players = [2,4] # one based
         self.bots = [1,0,1,1] # player 1 (zero based) is human
