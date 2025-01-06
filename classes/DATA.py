@@ -35,7 +35,7 @@ class _Parameters:
         self.amountPerCardType = [0,9,7,7,7,7,7,8,7,7,7,0,7,9,7] # for testing: only 1-13
         # self.amountPerCardType = [0,9,7,7,7,7,7,8,7,7,7,0,7,9,7,4,1,1,1,1] # all cards
         # self.amountPerCardType = [0,9,0,0,0,0,0,0,0,0,0,0,0,9] # for testing: only 1 & 13
-        self.debugShowSquareIndex = True
+        self.debugShowSquareIndex = False
 
 class _Constants:
     def __init__(self, width, height):
