@@ -68,6 +68,29 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
             _updateSquares(data)
             _nextTurn(data)
             return
+        if calc.getActiveCard(data).value == 15: # TAC
+            # reverse move
+            marble:ANIMATION.Marble
+            for player in data.board.playerSequence:
+                for marble in data.marbles.marbles[player]:
+                    if marble.square != marble.previousSquare:
+                        tempSquare = marble.square # swap current and previous square
+                        marble.square = marble.previousSquare
+                        marble.previousSquare = tempSquare
+                        tempBool = marble.isAbleToFinish # swap current and previous ability to finish
+                        marble.isAbleToFinish = marble.wasAbleToFinish
+                        marble.wasAbleToFinish = tempBool
+                        if data.cards.discardPileTopCard.value == 14: # reversing a trickser means direct path
+                            marble.waypoints.append(data.board.squaresXY[marble.square])
+                        else:
+                            if data.cards.discardPileTopCard.value == 4: # revert the move means going forward
+                                isMovingForwards = True
+                            else:
+                                isMovingForwards = False
+                            for square in botHelp.getSquaresBetween(marble.previousSquare, marble.square, isMovingForwards):
+                                marble.waypoints.append(data.board.squaresXY[square])
+            _updateSquares(data)
+            data.cards.hasTacBeenPlayed = True
     if card in range(5): # card in hand was selected
         if data.board.remainderOfPlayedSeven > 0: # in the middle of playing a 7, cant select another card
             return
@@ -76,6 +99,8 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
 def keyPress(data:DATA.Data, key:str)->None:
     if key == "1" or key == "2" or key == "3" or key == "4" or key == "5":
         if data.board.remainderOfPlayedSeven > 0: # in the middle of playing a 7, cant select another card
+            return
+        if data.cards.hasTacBeenPlayed: # in the muiddle of playing a Tac, cant select another card
             return
         cardSelected = int(key)-1 # key one based to zero based
         numberOfCardsInHand = len(data.cards.inHand[calc.getActivePlayer(data)])
@@ -158,6 +183,9 @@ def botTurn(data:DATA.Data):
         # make random move
         print("Move is invalid, falling back to random move")
         cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(botData)
+
+    data.cards.currentlySelected = cardIndex
+    data.board.selectedSquare = data.marbles.marbles[activePlayer][marbleIndex].square
 
     if not isDiscarding:
         #preparing moveMarble()
@@ -346,8 +374,11 @@ def _createProjectedSquares(data:DATA.Data):
     data.board.projectedSquares = [] # clear projected squares
     # data.marbles.waypoints = []
     if (data.cards.currentlySelected != -1 and data.marbles.currentlySelected != -1) or (calc.getActiveCard(data).value == 14 and data.board.selectedSquare != -1): # FS: project squares only if card and marble is selected
-        card:ANIMATION.Card = calc.getActiveCard(data)
-        cardValue = card.value
+        if data.cards.hasTacBeenPlayed:
+            cardValue = data.cards.discardPileTopCard.value # TODO: handle multiple TACs in a row
+        else:
+            cardValue = calc.getActiveCard(data).value
+
         if cardValue == 14: # trickster
             marble:ANIMATION.Marble = calc.getMarble(data, data.board.selectedSquare)
         else:
@@ -373,7 +404,18 @@ def _moveMarble(data:DATA.Data, square:int)->None:
     """ Move currently selected marble to square.\n
     If square is occupied, kick out occupier\n
     Reminder: data.marbles.currentlySelected needs to be set!"""
-    if calc.getActiveCard(data).value == 14: # trickser -> swap marbles
+    # store state
+    for player in data.board.playerSequence:
+        for marble in data.marbles.marbles[player]:
+            marble.previousSquare = marble.square
+            marble.wasAbleToFinish = marble.isAbleToFinish
+
+    if data.cards.hasTacBeenPlayed:
+        cardValue = data.cards.discardPileTopCard.value # TODO: handle multiple TACs in a row
+    else:
+        cardValue = calc.getActiveCard(data).value
+
+    if cardValue == 14: # trickser -> swap marbles
         marble = calc.getMarble(data, data.board.selectedSquare) # selected marble
         marble2 = calc.getMarble(data, square) # clicked marble
         

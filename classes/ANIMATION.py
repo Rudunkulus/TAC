@@ -23,9 +23,11 @@ class Marble:
         self.colour = (0,0,0)
 
         self.square = -1
+        self.previousSquare = -1
         self.isSelected = 0
         self.vel = 10
         self.isAbleToFinish = False
+        self.wasAbleToFinish = False
         self.waypoints = [] # tupel e.g. (0,0)
         self.radius = 12
 

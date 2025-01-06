@@ -59,7 +59,7 @@ def _drawBoard(data:DATA.Data, win):
 
     # draw center circle
     pygame.draw.circle(win, white, (xCenter, yCenter), data.constants.board.centerRadius, 0) # filled white
-    if ((data.board.isDiscardingCards or data.board.isForcedToSkip) and data.cards.currentlySelected != -1) or (data.cards.isEightSelected):
+    if ((data.board.isDiscardingCards or data.board.isForcedToSkip) and data.cards.currentlySelected != -1) or (data.cards.isEightSelected) or (calc.getActiveCard(data).value == 15):
         pygame.draw.circle(win, colourPlayer, (xCenter, yCenter), data.constants.board.centerRadius, lineThicknessThick)
     else:
         pygame.draw.circle(win, black, (xCenter, yCenter), data.constants.board.centerRadius, lineThickness)

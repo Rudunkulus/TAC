@@ -123,6 +123,7 @@ class _Cards:
         self.inHand = [[],[],[],[]] # TODO: switch to ([],[],[],[])
         self.currentlySelected = -1
         self.isEightSelected = False
+        self.hasTacBeenPlayed = False
     def __len__(self):
         return len(self.inHand)
 
