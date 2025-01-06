@@ -1,3 +1,4 @@
+import random
 from methods import botHelp
 from classes import DATA
 
@@ -80,8 +81,12 @@ def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
 def playCard(botData:DATA.BotData):
     currentPlayer = botData.players[0] # currentPlayer
     marblesOfPlayer = botData.marbles[currentPlayer]
-    for cardIndex in range(len(botData.cardsInHand)):
-        for marbleIndex in range(len(marblesOfPlayer)):
+    randomIndicesCard = list(range(botData.numberOfCardsInHand[currentPlayer]))
+    randomIndicesMarble = list(range(len(marblesOfPlayer)))
+    random.shuffle(randomIndicesCard)
+    random.shuffle(randomIndicesMarble)
+    for cardIndex in randomIndicesCard:
+        for marbleIndex in randomIndicesMarble:
             # check if combination is valid
             cardValue = botData.cardsInHand[cardIndex]
             marble = marblesOfPlayer[marbleIndex]
