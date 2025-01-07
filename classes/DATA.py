@@ -115,6 +115,7 @@ class _Board: #TODO: bring all dynamic variables in one class
         self.isForcedToSkip = False
         self.remainderOfPlayedSeven = 0
         self.isPlayingTac = False
+        self.valueOfTac = 0
 
 class _Cards:
     def __init__(self):

@@ -27,7 +27,7 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
         # if playing TAC:
         if calc.getActiveCard(data).value == 15:
             data.board.isPlayingTac = True
-            calc.getActiveCard(data).value = data.cards.discardPileTopCard.value # TODO: handle multiple TACs in a row
+            # calc.getActiveCard(data).value = data.cards.discardPileTopCard.value # TODO: handle multiple TACs in a row
             _undoPreviousMove(data)
             _updateSquares
             return
@@ -66,7 +66,14 @@ def botTurn(data:DATA.Data, cardIndex=-1, marbleIndex=-1):
     if not (botData.isPlayingASeven or botData.isPlayingTac): # new card selected
         data.cards.currentlySelected = botDecision.cardIndex
     card:ANIMATION.Card = data.cards.inHand[calc.getActivePlayer(data)][data.cards.currentlySelected]
-    marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex] 
+    marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex]
+
+    if card.value == 15:
+        data.board.isPlayingTac = True
+        # card.value = data.cards.discardPileTopCard.value # TODO: handle multiple TACs in a row
+        _undoPreviousMove(data)
+    else:
+        data.board.isPlayingTac = False
     _doAction(data, card, marble, botDecision.landingSquare, botDecision.isDiscarding)
 
     # rest of the move
@@ -124,6 +131,8 @@ def _getBotData(data:DATA.Data):
         botData.isPlayingASeven = False
         botData.remainderOfSeven = 0
     botData.isForcedToSkipTurn = data.board.isForcedToSkip
+    botData.isPlayingTac = data.board.isPlayingTac
+    botData.valueOfTac = data.board.valueOfTac
     return botData
 
 def _isMoveValid(data:DATA.Data, botDecision:DATA.BotDecision)->bool:
@@ -137,7 +146,9 @@ def _isMoveValid(data:DATA.Data, botDecision:DATA.BotDecision)->bool:
 
     _createProjectedSquares(data, card, marble)
     if botDecision.landingSquare in data.board.projectedSquares: # move is valid
+        data.board.projectedSquares = []
         return True
+    data.board.projectedSquares = []
     return False
 
 def _toggleSelectMarble(data:DATA.Data, clickedSquare:int)->None:
@@ -191,10 +202,20 @@ def _createProjectedSquares(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATIO
         print("ERROR in _createProjectedSquares: no marble selected")
         return
 
-    if data.board.remainderOfPlayedSeven > 0: # in the middle of playing a 7
+    movesLeft = card.value
+
+    # if played TAC: take value of previously played non-tac card
+    if card.value == 15:
+        movesLeft = data.board.valueOfTac
+        index = -1
+        while movesLeft == 0:
+            movesLeft = data.cards.discardPile[index]
+            index -= 1
+
+    # in the middle of playing a 7
+    if data.board.remainderOfPlayedSeven > 0:
         movesLeft = data.board.remainderOfPlayedSeven
-    else:
-        movesLeft = card.value
+    
     data.board.projectedSquares = botHelp.getPossibleSquares(data.board.squares, calc.getActivePlayer(data), marble.square, movesLeft, marble.isAbleToFinish, card.value)
 
 def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, landingSquare:int, isDiscarding:bool) -> None:
@@ -205,8 +226,8 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
     marbleTemp:ANIMATION.Marble
     for player in data.board.playerSequence:
         for marbleTemp in data.marbles.marbles[player]:
-            marbleTemp.previousSquare = marble.square
-            marbleTemp.wasAbleToFinish = marble.isAbleToFinish
+            marbleTemp.previousSquare = marbleTemp.square
+            marbleTemp.wasAbleToFinish = marbleTemp.isAbleToFinish
 
     # if discarding: other checks aren't necessary
     if isDiscarding:

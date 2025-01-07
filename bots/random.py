@@ -10,8 +10,8 @@ def main(botData:DATA.BotData, cardIndex=-1, marbleIndex=-1)->tuple[int,int,int,
         discardCard(botData, decision, cardIndex)
     if botData.isPlayingASeven:
         continuePlayedSeven(botData, decision, marbleIndex)
-    elif botData.isPlayingTac:
-        continuePlayedTac(botData, decision, marbleIndex)
+    # elif botData.isPlayingTac:
+    #     continuePlayedTac(botData, decision, marbleIndex)
     else:
         playCard(botData, decision, cardIndex, marbleIndex)
     return decision
@@ -55,25 +55,6 @@ def continuePlayedSeven(botData:DATA.BotData, decision:DATA.BotDecision, marbleI
             return
     discardCard(botData) # no valid move was found
 
-def continuePlayedTac(botData:DATA.BotData, decision:DATA.BotDecision, marbleIndex=-1):
-    currentPlayer = botData.players[0] # currentPlayer
-    marblesOfPlayer = botData.marbles[currentPlayer]
-    cardValue = botData.valueOfTac
-
-    randomIndicesMarble = list(range(len(marblesOfPlayer)))
-    random.shuffle(randomIndicesMarble)
-
-    for marbleIndex in randomIndicesMarble:
-        # check if combination is valid
-        marble:ANIMATION.Marble = marblesOfPlayer[marbleIndex]
-        possibleSquares = botHelp.getPossibleSquares(botData.squares, currentPlayer, marble.square, cardValue, marble.isAbleToFinish, cardValue)
-        if possibleSquares: # takes first possible combination
-            print("BOT chose following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[-1]))
-            decision.marbleIndex = marbleIndex
-            decision.landingSquare = possibleSquares[-1]  # take last square if multiple are possible -> prefer going in finish
-            return
-    discardCard(botData) # no valid move was found
-
 def discardCard(botData:DATA.BotData, decision:DATA.BotDecision, cardIndex=-1):
     if cardIndex == -1: # default: random card
         decision.cardIndex = random.randint(0,len(botData.cardsInHand)-1)
@@ -89,6 +70,13 @@ def tryCombination(botData:DATA.BotData, decision:DATA.BotDecision, cardIndex:in
     marblesOfPlayer = botData.marbles[currentPlayer]
     marble:ANIMATION.Marble = marblesOfPlayer[marbleIndex]
     cardValue = botData.cardsInHand[cardIndex]
+
+    if cardValue == 15: # if played TAC: take value of previously played non-tac card
+        index = -1
+        while cardValue == 15:
+            cardValue = botData.discardPile[index]
+            index -= 1
+
     possibleSquares = botHelp.getPossibleSquares(botData.squares, currentPlayer, marble.square, cardValue, marble.isAbleToFinish, cardValue)
     if possibleSquares: # takes first possible combination
         print("BOT chose following move: cardValue: " + str(cardValue) + ", marbleSquare = " + str(marble.square) + ", landingSquare = " + str(possibleSquares[-1]))
