@@ -10,7 +10,7 @@ def getPossibleSquares(board:list[int], player:int, marbleSquare:int, movesLeft:
     if marbleSquare in homeSquares and cardValue in [1,13]: # different rules
         return [getEntrySquare(player)]
     
-    if cardValue == 14: # trickser
+    if cardValue == 14 and marbleSquare < 64: # trickser
         if canPlayerPlaySpecialCards(board, player):
             # find all squares on ring that are ocupied by a marble
             for square in range(64):
@@ -181,6 +181,15 @@ def saturate(square:int)->int:
     while square < 0:
         square += 64
     return square
+
+def getValueOfLastNonTacCard(discardPile:list[int])->int:
+    """Return value of last played card that wasn't a TAC"""
+    index = -1
+    cardValue = 15
+    while cardValue == 15:
+        cardValue = discardPile[index]
+        index -= 1
+    return cardValue
 
 def getMarbleIndex(marbles:list[list[ANIMATION.Marble]], square:int)->tuple[int,int]:
     """Return player and marble index of marble that is on given square.\n

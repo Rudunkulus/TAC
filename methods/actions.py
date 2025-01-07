@@ -206,11 +206,7 @@ def _createProjectedSquares(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATIO
 
     # if played TAC: take value of previously played non-tac card
     if card.value == 15:
-        movesLeft = data.board.valueOfTac
-        index = -1
-        while movesLeft == 0:
-            movesLeft = data.cards.discardPile[index]
-            index -= 1
+        movesLeft = botHelp.getValueOfLastNonTacCard(data.cards.discardPile)
 
     # in the middle of playing a 7
     if data.board.remainderOfPlayedSeven > 0:

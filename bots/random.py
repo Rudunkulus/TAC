@@ -72,10 +72,7 @@ def tryCombination(botData:DATA.BotData, decision:DATA.BotDecision, cardIndex:in
     cardValue = botData.cardsInHand[cardIndex]
 
     if cardValue == 15: # if played TAC: take value of previously played non-tac card
-        index = -1
-        while cardValue == 15:
-            cardValue = botData.discardPile[index]
-            index -= 1
+        cardValue = botHelp.getValueOfLastNonTacCard(botData.discardPile)
 
     possibleSquares = botHelp.getPossibleSquares(botData.squares, currentPlayer, marble.square, cardValue, marble.isAbleToFinish, cardValue)
     if possibleSquares: # takes first possible combination
