@@ -27,7 +27,6 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
         # if playing TAC:
         if calc.getActiveCard(data).value == 15:
             data.board.isPlayingTac = True
-            # calc.getActiveCard(data).value = data.cards.discardPileTopCard.value # TODO: handle multiple TACs in a row
             _undoPreviousMove(data)
             _updateSquares
             return
