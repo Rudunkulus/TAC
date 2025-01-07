@@ -10,7 +10,7 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
     if square != -1 and not data.board.isForcedToSkip: # selected square
         if square in data.board.projectedSquares: # selected projected square
             # player move
-            _doAction(data, calc.getActiveCard(data), calc.getActiveMarble(data), square, False)
+            _doAction(data, calc.getActiveCard(data), calc.getMarble(data, data.board.selectedSquare), square, False)
             if data.board.remainderOfPlayedSeven == 0: # keep card if in middle of playing 7
                 _discardCard(data)
             _nextTurn(data)
