@@ -31,7 +31,7 @@ class _Parameters:
         self.FPS = 30
         self.allowResize = False
         self.players = [2,4] # one based
-        self.bots = [1,0,1,0] # player 1 (zero based) is human
+        self.bots = [1,0,1,1] # player 1 (zero based) is human
         self.amountPerCardType = [0,9,7,7,7,7,7,8,7,7,7,0,7,9,7,4] # all cards without unique cards
         # self.amountPerCardType = [0,9,7,7,7,7,7,8,7,7,7,0,7,9,7,4,1,1,1,1] # all cards
         # self.amountPerCardType = [0,9,0,0,0,0,0,0,0,0,0,0,0,9] # for testing: only 1 & 13
@@ -173,4 +173,13 @@ class BotData:
         self.remainingCards = [] # list[int]
         self.isForcedToSkipTurn = False
         self.isPlayingASeven = False
+        self.isPlayingTac = False
         self.remainderOfSeven = 0
+        self.valueOfTac = 0
+
+class BotDecision:
+    def __init__(self):
+        self.cardIndex = 0
+        self.marbleIndex = 0
+        self.landingSquare = 0
+        self.isDiscarding = 0

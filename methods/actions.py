@@ -3,6 +3,7 @@ import operator
 from classes import ANIMATION, DATA
 from methods import botHelp, calc
 from bots import random as botRandom
+from bots import template as botTemplate
 
 def mouseClick(data:DATA.Data, x:float, y:float)->None:
     square = calc.getClickedSquare((x, y), data.board.squaresXY, data.constants.board.squareRadius) # TODO: revert back to (data,...)
@@ -56,16 +57,34 @@ def keyPress(data:DATA.Data, key:str)->None:
         if cardSelected < numberOfCardsInHand: # only select if card spot is not empty
             _toggleSelectCard(data, cardSelected)
 
-def botTurn(data:DATA.Data):
-    # preparation
-    botData = DATA.BotData()
-    players = data.board.playerSequence
+def botTurn(data:DATA.Data, cardIndex=-1, marbleIndex=-1):
+    botData = _getBotData(data)
+    botDecision:DATA.BotDecision = botTemplate.main(botData) # (cardIndex, marbleIndex, landingSquare, isDiscarding) #TODO: validate structure of botDecision
+    if not _isMoveValid(data, botDecision):
+        print("Move is invalid, falling back to random move")
+        botDecision = botRandom.main(botData, cardIndex, marbleIndex)
+    if not (botData.isPlayingASeven or botData.isPlayingTac): # new card selected
+        data.cards.currentlySelected = botDecision.cardIndex
+    card:ANIMATION.Card = data.cards.inHand[calc.getActivePlayer(data)][data.cards.currentlySelected]
+    marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex] 
+    _doAction(data, card, marble, botDecision.landingSquare, botDecision.isDiscarding)
+
+    # rest of the move
+    if data.board.remainderOfPlayedSeven == 0:
+        _discardCard(data)
+    _updateSquares(data)
+    _nextTurn(data)
+    return
+
+def _getBotData(data:DATA.Data):
+    players = data.board.playerSequence.copy()
     activePlayer = calc.getActivePlayer(data)
     cardsInHand = []
-    squares = data.board.squares
-    discardPile = data.cards.discardPile
-    remainingPile = data.cards.remainingPile
+    squares = data.board.squares.copy()
+    discardPile = data.cards.discardPile.copy()
+    remainingPile = data.cards.remainingPile.copy()
     numberOfCardsInHand = [0,0,0,0]
+    card:ANIMATION.Card
     for player in players:
         numberOfCardsInHand[player] = len(data.cards.inHand[player])
         for card in data.cards.inHand[player]:
@@ -80,6 +99,7 @@ def botTurn(data:DATA.Data):
 
     # transform marbles to botmarbles
     marblesForBots = [[],[],[],[]]
+    marble:ANIMATION.Marble
     for player in players:
         for marble in data.marbles.marbles[player]:
             marbleForBots = ANIMATION.MarbleForBots()
@@ -89,6 +109,7 @@ def botTurn(data:DATA.Data):
             marblesForBots[player].append(marbleForBots)
 
     # store in botData # TODO: clean up
+    botData = DATA.BotData()
     botData.players = players
     botData.marbles = marblesForBots
     botData.squares = squares
@@ -103,54 +124,21 @@ def botTurn(data:DATA.Data):
         botData.isPlayingASeven = False
         botData.remainderOfSeven = 0
     botData.isForcedToSkipTurn = data.board.isForcedToSkip
+    return botData
 
-    # bot decision
-    # use bots."name".main()
-    cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(botData)
+def _isMoveValid(data:DATA.Data, botDecision:DATA.BotDecision)->bool:
+    """Return True if move is valid"""
+    card:ANIMATION.Card = data.cards.inHand[calc.getActivePlayer(data)][botDecision.cardIndex]
+    marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex] 
 
-    # check validity of bot move
-    overWriteBotDecision = False
+    # only allowed to discard if forced to or played card is a tac or 8
+    if botDecision.isDiscarding and not (data.board.isForcedToSkip or card.value in [8,15]): # false flag
+        return True
 
-    # check if discard flag is correct
-    # if any move is possible -> isDiscarding should be false. 
-    if isDiscarding == _isAnyMovePossible(data): # false flag
-        overWriteBotDecision = True
-    # check if discard is possible
-
-    # check if move is possible
-    marble = data.marbles.marbles[activePlayer][marbleIndex]
-    if data.board.remainderOfPlayedSeven > 0:
-        cardValue = data.board.remainderOfPlayedSeven
-    else:
-        cardValue = cardsInHand[cardIndex]
-    possibleSquares = botHelp.getPossibleSquares(squares, marble.square, cardValue, activePlayer, marble.isAbleToFinish)
-    _createProjectedSquares(data) # recreate possible moves
-    if landingSquare not in possibleSquares: # move is invalid
-        overWriteBotDecision = True
-    
-    if overWriteBotDecision:
-        # make random move
-        print("Move is invalid, falling back to random move")
-        cardIndex, marbleIndex, landingSquare, isDiscarding = botRandom.main(botData)
-
-    data.cards.currentlySelected = cardIndex
-    data.board.selectedSquare = data.marbles.marbles[activePlayer][marbleIndex].square
-
-    if not isDiscarding:
-        #preparing moveMarble()
-        data.marbles.currentlySelected = marbleIndex
-        data.cards.currentlySelected = cardIndex
-        _doAction(data, landingSquare)
-        # if data.board.remainderOfPlayedSeven > 0:
-        #     #TODO: bot handling 7
-        #     data.board.remainderOfPlayedSeven = 0
-        data.board.selectedSquare = landingSquare
-    # rest of the move
-    if data.board.remainderOfPlayedSeven == 0:
-        _discardCard(data)
-    _updateSquares(data)
-    _nextTurn(data)
-    return
+    _createProjectedSquares(data, card, marble)
+    if botDecision.landingSquare in data.board.projectedSquares: # move is valid
+        return True
+    return False
 
 def _toggleSelectMarble(data:DATA.Data, clickedSquare:int)->None:
     if clickedSquare == data.board.selectedSquare: # unselect marble

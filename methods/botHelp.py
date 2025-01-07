@@ -40,13 +40,11 @@ def _tryPreviousSquare(board:list[int], square:int, movesLeft:int, possibleSquar
     if movesLeft == 0: # this square is accessible
         possibleSquares.append(square)
         movesLeft += 1
-        print("Found a square")
         return possibleSquares
     
     # check if marble is blocking:
     if board[square] != -1 and movesLeft < 4: # a marble is blocking. it would be ok if this was the landing space (movesLeft == 1) TODO: check redundancy of movesleft>1
         movesLeft += 1
-        print("A marble is in the way")
         return possibleSquares
     
     previousSquare = _getPreviousSquare(square)
@@ -65,11 +63,9 @@ def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbl
         if board[square] == -1 or square < 64: # if on ring, you can beat another marble
             possibleSquares.append(square)
             movesLeft += 1
-            print("Found a square")
             return possibleSquares
         else:
             movesLeft += 1
-            print("can't kick marble outside of ring")
             return possibleSquares
     
     # check if marble is blocking:

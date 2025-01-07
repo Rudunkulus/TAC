@@ -3,10 +3,11 @@ from classes import DATA
 
 def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
     """Return (cardIndex, marbleIndex, landingSquare, isDiscarding)"""
-    cardIndex = 0
-    marbleIndex = 0
-    landingSquare = 0
-    isDiscarding = False
+    decision = DATA.BotDecision()
+    decision.cardIndex = 0
+    decision.marbleIndex = 0
+    decision.landingSquare = 0
+    decision.isDiscarding = False
 
     ############################################################################################################################################################
     # players: players is a list of all players in order of sequence.
@@ -74,4 +75,4 @@ def main(botData:DATA.BotData)->tuple[int,int,int, bool]:
     # if the returned card exceeds its domain and no valid move is possible, a random card will be discarded
     #########################################################################################################################################################
 
-    return cardIndex, marbleIndex, landingSquare, isDiscarding
+    return decision
