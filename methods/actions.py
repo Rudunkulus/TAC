@@ -24,7 +24,7 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
     if calc.isXYInCenterCircle(data, x, y) and data.cards.currentlySelected != -1: # clicked in center circle while a card was selected
         # order is important: check tac first, in case of reversing a skip
 
-        # if playing TAC:
+        # if playing TAC: TODO: can only play tac if able to use the card
         if calc.getActiveCard(data).value == 15:
             data.board.isPlayingTac = True
             _undoPreviousMove(data)
