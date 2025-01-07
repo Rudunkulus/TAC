@@ -337,10 +337,10 @@ def _nextTurn(data:DATA.Data):
             dealCards(data)
             _selectNextPlayer(data) # 2x selectNextPlayer because Dealer moves
 
-        # # check if any move is possible TODO: check if any move is possible
-        # if not _isAnyMovePossible(data):
-        #     data.board.isDiscardingCards = True
-        #     print("No move possible. Your are now discarding cards")
+        # check if any move is possible
+        if not _isAnyMovePossible(data):
+            data.board.isForcedToSkip = True
+            print("No move possible. Your are now discarding cards")
 
     # # TODO: set positions for cards of new player
     # handSizeOfActivePlayer = len(data.cards.inHand[calc.activePlayer()])
@@ -401,10 +401,12 @@ def _isAnyMovePossible(data:DATA.Data):
     """checks if player could make any move or needs to discard cards"""
     player = calc.getActivePlayer(data)
     possibleMoves = []
+    card:ANIMATION.Card
+    marble:ANIMATION.Marble
     for card in data.cards.inHand[player]:
         for marble in data.marbles.marbles[player]: # tries every combination of card and marble
             # homeSquares = botHelp.getHomeSquares(player)
-            possibleMoves = botHelp.getPossibleSquares(data.board.squares, marble.square, card.value, player, marble.isAbleToFinish)
+            possibleMoves = botHelp.getPossibleSquares(data.board.squares, player, marble.square, card.value, marble.isAbleToFinish, card.value)
             # possibleMoves = getPossibleMoves(marble, card, player, homeSquares)
             if possibleMoves: # a move is possible
                 return True
