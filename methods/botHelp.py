@@ -1,14 +1,10 @@
 from classes import ANIMATION
 
-def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:int, isAbleToFinish:bool, isCardASeven=False):
+def getPossibleSquares(board:list[int], player:int, marbleSquare:int, movesLeft:int, isAbleToFinish:bool, cardValue:int):
     """ Return list of possible squares the given marble could reach with the given card.\n
     Return empty list if no move is possible with current combination"""
     possibleSquares = []
     homeSquares = getHomeSquares(player)
-    # if cardValue == 7:
-    #     isCardASeven = True
-    # else:
-    #     isCardASeven = False
 
     # coming out of home
     if marbleSquare in homeSquares and cardValue in [1,13]: # different rules
@@ -28,11 +24,9 @@ def getPossibleSquares(board:list[int], marbleSquare:int, cardValue:int, player:
             return []
 
     if not marbleSquare in homeSquares: # normal move
-        movesLeft = cardValue
-        originalCardValue = cardValue
         if cardValue != 4:
             for nextSquare in _getNextSquares(player, marbleSquare, isAbleToFinish):
-                _tryNextSquare(board, player, nextSquare, movesLeft-1, isAbleToFinish, possibleSquares, originalCardValue)
+                _tryNextSquare(board, player, nextSquare, movesLeft-1, isAbleToFinish, possibleSquares, cardValue)
         else:
             _tryPreviousSquare(board, marbleSquare, cardValue, possibleSquares)
     return possibleSquares
@@ -60,7 +54,7 @@ def _tryPreviousSquare(board:list[int], square:int, movesLeft:int, possibleSquar
     movesLeft +=1
     return possibleSquares
 
-def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbleToFinish:bool, possibleSquares:list[int], originalCardValue):
+def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbleToFinish:bool, possibleSquares:list[int], originalCardValue:int):
     """Recursive process of trying next squares until\n
     - another marble is in the way -> not valid\n
     - the end of the finish is reached -> not valid\n

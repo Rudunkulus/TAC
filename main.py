@@ -1,7 +1,7 @@
 import pygame #GUI using pygame
 from classes import DATA
 from bots import *
-from methods import actions, draw
+from methods import actions, draw, initGame
 # from classes import ANIMATION
 
 # animation = ANIMATION.Animation()
@@ -19,13 +19,13 @@ clock=pygame.time.Clock()
 run=True
 
 # actions.initGame()
-actions.initRandomGame(data)
+initGame.initRandomPosition(data)
 
 while run:
     clock.tick(FPS)
     draw.updateWindow(data, win)
 
-    if data.board.isActivePlayerABot:
+    if data.parameters.bots[data.board.playerSequence[0]]: # TODO: don't use parameters
         try:
             actions.botTurn(data)
         except Exception as e: print(e)

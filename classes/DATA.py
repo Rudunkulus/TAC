@@ -31,7 +31,7 @@ class _Parameters:
         self.FPS = 30
         self.allowResize = False
         self.players = [2,4] # one based
-        self.bots = [1,0,1,1] # player 1 (zero based) is human
+        self.bots = [1,0,1,0] # player 1 (zero based) is human
         self.amountPerCardType = [0,9,7,7,7,7,7,8,7,7,7,0,7,9,7,4] # all cards without unique cards
         # self.amountPerCardType = [0,9,7,7,7,7,7,8,7,7,7,0,7,9,7,4,1,1,1,1] # all cards
         # self.amountPerCardType = [0,9,0,0,0,0,0,0,0,0,0,0,0,9] # for testing: only 1 & 13
@@ -103,27 +103,28 @@ class _ConstantsMarbles:
         self.speed = 5
         self.radius = 0.8 * squareRadius
 
-class _Board:
+class _Board: #TODO: bring all dynamic variables in one class
     def __init__(self):
         self.squares = [-1] * (64 + 4*4 + 4*4) # 64 in ring + 4x 4 homes + 4x 4 finishes
         self.squaresXY = []
         self.selectedSquare = -1
         self.projectedSquares = []
         self.playerSequence = []
-        self.isDiscardingCards = False
-        self.isActivePlayerABot = False
+        # self.isDiscardingCards = False
+        # self.isActivePlayerABot = False
         self.isForcedToSkip = False
         self.remainderOfPlayedSeven = 0
+        self.isPlayingTac = False
 
 class _Cards:
     def __init__(self):
         self.remainingPile = []
-        self.discardPileTopCard:ANIMATION.Card = [] # TODO: see if that works
+        self.discardPileTopCard:ANIMATION.Card = []
         self.discardPile = []
         self.inHand = [[],[],[],[]] # TODO: switch to ([],[],[],[])
         self.currentlySelected = -1
-        self.isEightSelected = False
-        self.hasTacBeenPlayed = False
+        # self.isEightSelected = False
+        # self.hasTacBeenPlayed = False
     def __len__(self):
         return len(self.inHand)
 
@@ -140,7 +141,6 @@ class _Marbles:
     def __init__(self):
         self.marbles:ANIMATION.Marble = [[],[],[],[]] # TODO: switch to ([],[],[],[])
         self.currentlySelected = -1
-        self.possibleWaypoints = [] # tupel list
     def __len__(self):
         return len(self.marbles)
     
@@ -150,7 +150,6 @@ class _PlayerSpecific:
         self.y = [-1, 1, 1, -1]
         self.entrySquare = [0, 16, 32, 48] # where first marble is placed
         self.colour = [colours["black"], colours["green"], colours["blue"], colours["red"]]
-        # self.colour = [(255,255,0),(255,0,0),(0,0,255),(0,255,0)] # black red blue green
     
 class _Text:
     def __init__(self):
