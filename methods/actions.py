@@ -39,7 +39,7 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
             _nextTurn(data)
             return
         
-        if calc.getActiveCard(data).value == 8:
+        if calc.getActiveCard(data).value == 8 and botHelp.canPlayerPlaySpecialCards:
             data.board.isForcedToSkip = True
             _discardCard(data)
             _nextTurn(data)

@@ -1,5 +1,5 @@
 import pygame
-from methods import calc
+from methods import calc, botHelp
 from classes import DATA
 # import os
 
@@ -59,7 +59,7 @@ def _drawBoard(data:DATA.Data, win):
 
     # draw center circle
     pygame.draw.circle(win, white, (xCenter, yCenter), data.constants.board.centerRadius, 0) # filled white
-    if (data.board.isForcedToSkip or calc.getActiveCard(data).value == 8 or calc.getActiveCard(data).value == 15) and data.cards.currentlySelected != -1:
+    if (data.board.isForcedToSkip or (calc.getActiveCard(data).value == 8 and botHelp.canPlayerPlaySpecialCards) or calc.getActiveCard(data).value == 15) and data.cards.currentlySelected != -1:
         pygame.draw.circle(win, colourPlayer, (xCenter, yCenter), data.constants.board.centerRadius, lineThicknessThick)
     else:
         pygame.draw.circle(win, black, (xCenter, yCenter), data.constants.board.centerRadius, lineThickness)
