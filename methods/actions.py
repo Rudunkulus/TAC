@@ -17,8 +17,8 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
             _nextTurn(data)
             _updateSquares(data)
             return
-        # selected square with own marble or selected any marble if playing trickser:
-        if data.board.squares[square] == calc.getActivePlayer(data) or (calc.getActiveCard(data).value == 14 and data.board.squares[square] != -1):
+        # selected square with own marble or selected any marble on ring if playing trickser:
+        if data.board.squares[square] == calc.getActivePlayer(data) or (calc.getActiveCard(data).value == 14 and data.board.squares[square] != -1 and square < 64):
             _toggleSelectMarble(data, square)
             return
     if calc.isXYInCenterCircle(data, x, y) and data.cards.currentlySelected != -1: # clicked in center circle while a card was selected
