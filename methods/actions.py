@@ -269,6 +269,8 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
     if card.value == 7:
         if data.board.remainderOfPlayedSeven == 0: #first move of the 7
             data.board.remainderOfPlayedSeven = 7 - len(marble.waypoints)
+            if data.board.remainderOfPlayedSeven < 0:
+                print("ERROR in doAction(): remainderOfSeven < 0")
         else:
             data.board.remainderOfPlayedSeven = data.board.remainderOfPlayedSeven - len(marble.waypoints)
 
