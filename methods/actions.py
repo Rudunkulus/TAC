@@ -63,17 +63,13 @@ def botTurn(data:DATA.Data, cardIndex=-1, marbleIndex=-1):
     if not _isMoveValid(data, botDecision):
         print("Move is invalid, falling back to random move")
         botDecision = botRandom.main(botData, cardIndex, marbleIndex)
-    if not (botData.isPlayingASeven or botData.isPlayingTac): # new card selected
+    if not botData.isPlayingASeven: # new card selected
         data.cards.currentlySelected = botDecision.cardIndex
     card:ANIMATION.Card = data.cards.inHand[calc.getActivePlayer(data)][data.cards.currentlySelected]
     marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex]
 
     if card.value == 15:
-        data.board.isPlayingTac = True
-        # card.value = data.cards.discardPileTopCard.value # TODO: handle multiple TACs in a row
         _undoPreviousMove(data)
-    else:
-        data.board.isPlayingTac = False
     _doAction(data, card, marble, botDecision.landingSquare, botDecision.isDiscarding)
 
     # rest of the move
