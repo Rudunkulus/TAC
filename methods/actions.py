@@ -279,6 +279,17 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
                 data.board.remainderOfPlayedSeven = 0 # hard fix, should never happen
         else:
             data.board.remainderOfPlayedSeven = data.board.remainderOfPlayedSeven - len(marble.waypoints)
+        # check if any move is possible after this one
+        isStillAbleToMakeAMove = False
+        for marbleTemp in data.marbles.marbles[calc.getActivePlayer(data)]:
+            if marbleTemp.square < 64: # on ring
+                isStillAbleToMakeAMove = True
+                break
+            if marbleTemp.square > 79 and not botHelp.isMarbleLockedIn(data.board.squares, marbleTemp.square):
+                isStillAbleToMakeAMove = True
+                break
+        if not isStillAbleToMakeAMove:
+            data.board.remainderOfPlayedSeven == 0
 
 def _removeMarble(data:DATA.Data, square:int)->None:
     """Find marble that is on given square and return it to home square"""
