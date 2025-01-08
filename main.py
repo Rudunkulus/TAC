@@ -49,4 +49,15 @@ while run:
             try:
                 actions.keyPress(data, key)
             except Exception as e: print(e)
+
+# debugging
+_marbles = [[],[],[],[]]
+for square in range(96):
+    if data.board.squares[square] != -1:
+        _marbles[data.board.squares[square]].append(square)
+
+_cards = [[],[],[],[]]
+for player in range (4):
+    for cardIndex in range(len(data.cards.inHand[player])):
+        _cards[player].append(data.cards.inHand[player][cardIndex].value)
 pygame.quit()
