@@ -75,7 +75,7 @@ def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbl
     # check if marble is blocking:
     if board[square] != -1 and movesLeft != originalCardValue-1: # a marble is blocking. it would be ok if this was the landing space (movesLeft == 1) TODO: check redundancy of movesleft>1
         movesLeft += 1
-        if originalCardValue == 7:
+        if originalCardValue == 7 and square < 64: # even with 7 not able to kick marble in finish
             possibleSquares.append(square)
         print("A marble is in the way")
         return possibleSquares
