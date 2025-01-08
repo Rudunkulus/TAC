@@ -27,6 +27,7 @@ while run:
 
     if data.parameters.bots[data.board.playerSequence[0]]: # TODO: don't use parameters
         try:
+            draw.waitForAnimation(data, win, clock)
             actions.botTurn(data)
         except Exception as e: print(e)
         # actions.botTurn(data)
