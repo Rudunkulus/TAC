@@ -53,7 +53,7 @@ def continuePlayedSeven(botData:DATA.BotData, decision:DATA.BotDecision, marbleI
             decision.marbleIndex = marbleIndex
             decision.landingSquare = possibleSquares[-1]  # take last square if multiple are possible -> prefer going in finish
             return
-    discardCard(botData) # no valid move was found
+    discardCard(botData, decision) # no valid move was found
 
 def discardCard(botData:DATA.BotData, decision:DATA.BotDecision, cardIndex=-1):
     if cardIndex == -1: # default: random card
