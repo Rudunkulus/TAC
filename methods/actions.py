@@ -277,7 +277,6 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
             if data.board.remainderOfPlayedSeven < 0:
                 print("ERROR in doAction(): remainderOfSeven < 0")
                 data.board.remainderOfPlayedSeven = 0 # hard fix, should never happen
-                data.board.remainderOfPlayedSeven = 0 # hard fix, should never happen
         else:
             data.board.remainderOfPlayedSeven = data.board.remainderOfPlayedSeven - len(marble.waypoints)
 
