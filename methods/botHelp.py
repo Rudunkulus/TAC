@@ -5,14 +5,13 @@ def getPossibleSquares(board:list[int], player:int, marbleSquare:int, movesLeft:
     Return empty list if no move is possible with current combination"""
     possibleSquares = []
     homeSquares = getHomeSquares(player)
-    finishSquares = getFinishSquares(player)
 
     # coming out of home
     if marbleSquare in homeSquares and cardValue in [1,13]: # different rules
         return [getEntrySquare(player)]
 
-    # check if marble is locked in: all squares in finish after the marble need to be occupied TODO: maybe implement FS to check for colour of marbles
-    if marbleSquare in finishSquares and min(board[marbleSquare:finishSquares[3]]+1) != -1:
+    # check if marble is locked in
+    if isMarbleLockedIn(board, marbleSquare):
         return []
     
     if cardValue == 14 and marbleSquare < 64: # trickser
@@ -201,6 +200,19 @@ def isFirstTurnOfRound(cardsInHand:list[list[int]])->bool:
         if len(cardsInHand[player]) not in [0,5]: # at the beginning of the round, all players have either 0 or 5 cards
             return False
     return True
+
+def isMarbleLockedIn(board:list[int], marbleSquare:int)->bool:
+    """Return True if marble is locked in. Locked in if:\n
+    - in finish squares\n
+    - all squares after the current one are occupied"""
+    if marbleSquare < 80:
+        return False
+    lastFinishSquare = marbleSquare - (marbleSquare % 4) + 3
+    print(lastFinishSquare)
+    if marbleSquare == lastFinishSquare:
+        return True
+    else:
+        return min(board[marbleSquare+1:lastFinishSquare+1]) != -1 # TODO: maybe implement FS to check for colour of marbles
 
 def saturate(square:int)->int:
     """ saturates looping squares to [0,63]\n
