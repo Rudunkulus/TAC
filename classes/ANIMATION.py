@@ -8,6 +8,7 @@ class Card:
     def __init__(self):
         self.owner = -1
         self.value = 0
+        self.shownValue = 0
         self.vel = 0
         self.x = 0
         self.y = 0

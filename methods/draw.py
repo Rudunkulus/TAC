@@ -59,7 +59,7 @@ def _drawBoard(data:DATA.Data, win):
 
     # draw center circle
     pygame.draw.circle(win, white, (xCenter, yCenter), data.constants.board.centerRadius, 0) # filled white
-    if (data.board.isForcedToSkip or (calc.getActiveCard(data).value == 8 and botHelp.canPlayerPlaySpecialCards) or calc.getActiveCard(data).value == 15) and data.cards.currentlySelected != -1:
+    if (data.board.isForcedToSkip or (calc.getActiveCard(data).value == 8 and botHelp.isAbleToPlaySpecialCards) or (calc.getActiveCard(data).value == 15 and not botHelp.isFirstTurnOfRound(data.cards.inHand))) and data.cards.currentlySelected != -1:
         pygame.draw.circle(win, colourPlayer, (xCenter, yCenter), data.constants.board.centerRadius, lineThicknessThick)
     else:
         pygame.draw.circle(win, black, (xCenter, yCenter), data.constants.board.centerRadius, lineThickness)
@@ -166,12 +166,12 @@ def _drawHand(data:DATA.Data, win):
             _drawCardEntity(data, win, card)
 
 def _drawCardEntity(data:DATA.Data, win, card):
-    if card.value in data.constants.cards.redCards:
+    if card.shownValue in data.constants.cards.redCards:
         textColour = data.colours["red"]
     else:
         textColour = data.colours["black"]
     if card.isShowingValue:
-        text = str(data.text.cards[card.value])
+        text = str(data.text.cards[card.shownValue])
     else:
         text = ""
 

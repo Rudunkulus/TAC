@@ -25,8 +25,9 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
         # order is important: check tac first, in case of reversing a skip
 
         # if playing TAC: TODO: can only play tac if able to use the card
-        if calc.getActiveCard(data).value == 15:
+        if calc.getActiveCard(data).value == 15 and not botHelp.isFirstTurnOfRound(data.cards.inHand):
             data.board.isPlayingTac = True
+            calc.getActiveCard(data).value = botHelp.getValueOfLastNonTacCard(data.cards.discardPile)
             _undoPreviousMove(data)
             _updateSquares
             return
@@ -197,15 +198,15 @@ def _createProjectedSquares(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATIO
         print("ERROR in _createProjectedSquares: no marble selected")
         return
 
-    movesLeft = card.value
-
     # if played TAC: take value of previously played non-tac card
     if card.value == 15:
-        movesLeft = botHelp.getValueOfLastNonTacCard(data.cards.discardPile)
+        card.value = botHelp.getValueOfLastNonTacCard(data.cards.discardPile)
 
     # in the middle of playing a 7
     if data.board.remainderOfPlayedSeven > 0:
         movesLeft = data.board.remainderOfPlayedSeven
+    else:
+        movesLeft = card.value
     
     data.board.projectedSquares = botHelp.getPossibleSquares(data.board.squares, calc.getActivePlayer(data), marble.square, movesLeft, marble.isAbleToFinish, card.value)
 
@@ -331,6 +332,7 @@ def _nextTurn(data:DATA.Data):
     data.marbles.currentlySelected = -1
     data.board.selectedSquare = -1
     data.board.projectedSquares = []
+    data.board.isPlayingTac = False
 
     if data.board.remainderOfPlayedSeven == 0: # keep playing while still some of 7 left
         _selectNextPlayer(data)
@@ -385,6 +387,7 @@ def _createCard(data:DATA.Data, player:int, value:int, numberOfCardsInHand:int)-
     It Spawns in center and moves to correct position in players hand"""
     card = ANIMATION.Card() # create instance of card
     card.value = value # set value
+    card.shownValue = value
     card.x = data.constants.xCenter # card spawning in center
     card.y = data.constants.yCenter
     card.owner = player # set owner

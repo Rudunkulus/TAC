@@ -173,6 +173,13 @@ def canPlayerPlaySpecialCards(board:list[int], player:int)->bool:
             return True
     return False
 
+def isFirstTurnOfRound(cardsInHand:list[list[int]])->bool:
+    """Return True if it's the first move of the round"""
+    for player in range(4):
+        if len(cardsInHand[player]) not in [0,5]: # at the beginning of the round, all players have either 0 or 5 cards
+            return False
+    return True
+
 def saturate(square:int)->int:
     """ saturates looping squares to [0,63]\n
      64 -> 0 and -1 -> 63 """
