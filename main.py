@@ -38,11 +38,11 @@ while run:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             x_mouse, y_mouse = pygame.mouse.get_pos()
-            # try:
-            #     actions.mouseClick(data, x_mouse,y_mouse)
-            # except Exception as e: print(e)
+            try:
+                actions.mouseClick(data, x_mouse,y_mouse)
+            except Exception as e: print(e)
             
-            actions.mouseClick(data, x_mouse,y_mouse)
+            # actions.mouseClick(data, x_mouse,y_mouse)
 
         if event.type == pygame.KEYDOWN:
             key = pygame.key.name(event.key)
