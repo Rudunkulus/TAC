@@ -114,7 +114,7 @@ class _Board: #TODO: bring all dynamic variables in one class
         # self.isActivePlayerABot = False
         self.isForcedToSkip = False
         self.remainderOfPlayedSeven = 0
-        self.isPlayingTac = False
+        self.isPlayingATac = False
         self.valueOfTac = 0
 
 class _Cards:
@@ -174,7 +174,7 @@ class BotData:
         self.remainingCards = [] # list[int]
         self.isForcedToSkipTurn = False
         self.isPlayingASeven = False
-        self.isPlayingTac = False
+        self.isPlayingATac = False
         self.remainderOfSeven = 0
 
 class BotDecision:

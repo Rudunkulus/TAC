@@ -26,7 +26,7 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
 
         # if playing TAC: TODO: can only play tac if able to use the card
         if calc.getActiveCard(data).value == 15 and not botHelp.isFirstTurnOfRound(data.cards.inHand):
-            data.board.isPlayingTac = True
+            data.board.isPlayingATac = True
             calc.getActiveCard(data).value = botHelp.getValueOfLastNonTacCard(data.cards.discardPile)
             _undoPreviousMove(data)
             _updateSquares
@@ -46,12 +46,12 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
         return
     
     # card in hand was selected and player is not in the middle of playing a seven or a tac
-    if card in range(5) and data.board.remainderOfPlayedSeven == 0 and not data.board.isPlayingTac: 
+    if card in range(5) and data.board.remainderOfPlayedSeven == 0 and not data.board.isPlayingATac: 
         _toggleSelectCard(data, card)
         
 def keyPress(data:DATA.Data, key:str)->None:
     # card in hand was selected and player is not in the middle of playing a seven or a tac
-    if key in ["1","2","3","4","5"] and data.board.remainderOfPlayedSeven == 0 and not data.board.isPlayingTac:
+    if key in ["1","2","3","4","5"] and data.board.remainderOfPlayedSeven == 0 and not data.board.isPlayingATac:
         cardSelected = int(key)-1 # key one based to zero based
         numberOfCardsInHand = len(data.cards.inHand[calc.getActivePlayer(data)])
         if cardSelected < numberOfCardsInHand: # only select if card spot is not empty
@@ -129,7 +129,7 @@ def _getBotData(data:DATA.Data):
         botData.isPlayingASeven = False
         botData.remainderOfSeven = 0
     botData.isForcedToSkipTurn = data.board.isForcedToSkip
-    botData.isPlayingTac = data.board.isPlayingTac
+    botData.isPlayingATac = data.board.isPlayingATac
     # botData.valuePreviouslyPlayedCard = botHelp.getValueOfLastNonTacCard(data.)
     return botData
 
@@ -353,7 +353,7 @@ def _nextTurn(data:DATA.Data):
     data.marbles.currentlySelected = -1
     data.board.selectedSquare = -1
     data.board.projectedSquares = []
-    data.board.isPlayingTac = False
+    data.board.isPlayingATac = False
 
     if data.board.remainderOfPlayedSeven == 0: # keep playing while still some of 7 left
         _selectNextPlayer(data)
