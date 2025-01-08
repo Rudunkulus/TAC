@@ -64,7 +64,7 @@ def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbl
             possibleSquares.append(square)
             movesLeft += 1
             return possibleSquares
-        else:
+        else: # marble in way & outside of ring -> no move possible
             movesLeft += 1
             return possibleSquares
     
