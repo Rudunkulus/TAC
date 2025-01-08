@@ -11,7 +11,7 @@ def getPossibleSquares(board:list[int], player:int, marbleSquare:int, movesLeft:
         return [getEntrySquare(player)]
     
     if cardValue == 14 and marbleSquare < 64: # trickser
-        if canPlayerPlaySpecialCards(board, player):
+        if isAbleToPlaySpecialCards(board, player):
             # find all squares on ring that are ocupied by a marble
             for square in range(64):
                 if board[square] != -1 and square != marbleSquare:
@@ -166,7 +166,7 @@ def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->li
             squaresBetween.append(square)
     return squaresBetween
 
-def canPlayerPlaySpecialCards(board:list[int], player:int)->bool:
+def isAbleToPlaySpecialCards(board:list[int], player:int)->bool:
     """Return True if player has at least one own marble on ring"""
     for square in range(64):
         if board[square] != player:

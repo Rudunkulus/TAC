@@ -39,7 +39,7 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
             _nextTurn(data)
             return
         
-        if calc.getActiveCard(data).value == 8 and botHelp.canPlayerPlaySpecialCards:
+        if calc.getActiveCard(data).value == 8 and botHelp.isAbleToPlaySpecialCards:
             data.board.isForcedToSkip = True
             _discardCard(data)
             _nextTurn(data)
@@ -223,8 +223,8 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
 
     # if discarding: other checks aren't necessary
     if isDiscarding:
-        # if playing 8 and allowed to use abilities: force next player to skip
-        data.board.isForcedToSkip = card.value == 8 and botHelp.canPlayerPlaySpecialCards(data.board.squares, calc.getActivePlayer(data))
+        # if playing 8 and allowed to use abilities: force next player to skip TODO: remove ability check
+        data.board.isForcedToSkip = card.value == 8 and botHelp.isAbleToPlaySpecialCards(data.board.squares, calc.getActivePlayer(data))
         return
 
     # if using Trickser: swap marbles
