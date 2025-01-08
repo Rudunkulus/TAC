@@ -363,7 +363,7 @@ def _nextTurn(data:DATA.Data):
             _selectNextPlayer(data) # 2x selectNextPlayer because Dealer moves
 
         # check if any move is possible
-        if not _isAnyMovePossible(data):
+        if not calc.isAnyMovePossible(data):
             data.board.isForcedToSkip = True
             print("No move possible. Your are now discarding cards")
 
@@ -422,19 +422,3 @@ def _shuffleDeck(data:DATA.Data)->None:
     data.cards.remainingPile = data.cards.discardPile
     random.shuffle(data.cards.remainingPile)
     data.cards.discardPile = []
-
-def _isAnyMovePossible(data:DATA.Data):
-    """checks if player could make any move or needs to discard cards"""
-    player = calc.getActivePlayer(data)
-    possibleMoves = []
-    card:ANIMATION.Card
-    marble:ANIMATION.Marble
-    for card in data.cards.inHand[player]:
-        for marble in data.marbles.marbles[player]: # tries every combination of card and marble
-            if card.value in [8,14,15] and botHelp.isAbleToPlaySpecialCards(data.board.squares, player):
-                return True
-            possibleMoves = botHelp.getPossibleSquares(data.board.squares, player, marble.square, card.value, marble.isAbleToFinish, card.value)
-            if possibleMoves: # a move is possible
-                return True
-    print("No move possible. Forced to discard")
-    return False

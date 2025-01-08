@@ -77,6 +77,21 @@ def moveCloserToWaypoint(entity:ANIMATION.Card, velocity:float):
     entity.x += vx
     entity.y += vy
 
+def isAnyMovePossible(data:DATA.Data):
+    """checks if player could make any move or needs to discard cards"""
+    player = getActivePlayer(data)
+    possibleMoves = []
+    card:ANIMATION.Card
+    marble:ANIMATION.Marble
+    for card in data.cards.inHand[player]:
+        for marble in data.marbles.marbles[player]: # tries every combination of card and marble
+            if card.value in [8,14,15] and botHelp.isAbleToPlaySpecialCards(data.board.squares, player):
+                return True
+            possibleMoves = botHelp.getPossibleSquares(data.board.squares, player, marble.square, card.value, marble.isAbleToFinish, card.value)
+            if possibleMoves: # a move is possible
+                return True
+    print("No move possible. Forced to discard")
+    return False
 
 def _getDistanceToWaypoint(entity:ANIMATION.Card)->float:
     """ returns distance to current waypoint.\n
