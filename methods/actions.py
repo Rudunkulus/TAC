@@ -68,7 +68,7 @@ def botTurn(data:DATA.Data, cardIndex=-1, marbleIndex=-1):
     card:ANIMATION.Card = data.cards.inHand[calc.getActivePlayer(data)][data.cards.currentlySelected]
     marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex]
 
-    if card.value == 15:
+    if card.shownValue == 15:
         _undoPreviousMove(data)
     _doAction(data, card, marble, botDecision.landingSquare, botDecision.isDiscarding)
 
