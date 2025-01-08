@@ -221,6 +221,10 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
             marbleTemp.previousSquare = marbleTemp.square
             marbleTemp.wasAbleToFinish = marbleTemp.isAbleToFinish
 
+    # if forced to skip:
+    if data.board.isForcedToSkip:
+        return
+
     # if discarding: other checks aren't necessary
     if isDiscarding:
         # if playing 8 and allowed to use abilities: force next player to skip TODO: remove ability check
