@@ -138,8 +138,8 @@ def _isMoveValid(data:DATA.Data, botDecision:DATA.BotDecision)->bool:
     card:ANIMATION.Card = data.cards.inHand[calc.getActivePlayer(data)][botDecision.cardIndex]
     marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex] 
 
-    # only allowed to discard if forced to or played card is a tac or 8
-    if botDecision.isDiscarding and not (data.board.isForcedToSkip or card.value in [8,15]): # false flag
+    # only allowed to discard if forced to or played card is a tac or 8 TODO: introduce playAbility
+    if botDecision.isDiscarding and not (data.board.isForcedToSkip or card.value == 8): # false flag
         return True
 
     _createProjectedSquares(data, card, marble)
