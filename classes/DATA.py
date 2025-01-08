@@ -176,7 +176,6 @@ class BotData:
         self.isPlayingASeven = False
         self.isPlayingTac = False
         self.remainderOfSeven = 0
-        self.valueOfTac = 0
 
 class BotDecision:
     def __init__(self):

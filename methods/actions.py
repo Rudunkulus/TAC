@@ -130,7 +130,7 @@ def _getBotData(data:DATA.Data):
         botData.remainderOfSeven = 0
     botData.isForcedToSkipTurn = data.board.isForcedToSkip
     botData.isPlayingTac = data.board.isPlayingTac
-    botData.valueOfTac = data.board.valueOfTac
+    # botData.valuePreviouslyPlayedCard = botHelp.getValueOfLastNonTacCard(data.)
     return botData
 
 def _isMoveValid(data:DATA.Data, botDecision:DATA.BotDecision)->bool:
