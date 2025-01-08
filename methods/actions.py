@@ -108,7 +108,9 @@ def _getBotData(data:DATA.Data):
             marbleForBots = ANIMATION.MarbleForBots()
             marbleForBots.owner = player
             marbleForBots.square = marble.square
+            marbleForBots.previousSquare = marble.previousSquare
             marbleForBots.isAbleToFinish = marble.isAbleToFinish
+            marbleForBots.wasAbleToFinish = marble.wasAbleToFinish
             marblesForBots[player].append(marbleForBots)
 
     # store in botData # TODO: clean up

@@ -73,6 +73,7 @@ def tryCombination(botData:DATA.BotData, decision:DATA.BotDecision, cardIndex:in
 
     if cardValue == 15: # if played TAC: take value of previously played non-tac card
         cardValue = botHelp.getValueOfLastNonTacCard(botData.discardPile)
+        botHelp.undoPreviousMove(botData)
 
     possibleSquares = botHelp.getPossibleSquares(botData.squares, currentPlayer, marble.square, cardValue, marble.isAbleToFinish, cardValue)
     if possibleSquares: # takes first possible combination
@@ -81,4 +82,6 @@ def tryCombination(botData:DATA.BotData, decision:DATA.BotDecision, cardIndex:in
         decision.marbleIndex = marbleIndex
         decision.landingSquare = possibleSquares[-1]  # take last square if multiple are possible -> prefer going in finish
         return True
+    if cardValue == 15:
+        botHelp.undoPreviousMove(botData) # redo previous move if TAC was tested
     return False

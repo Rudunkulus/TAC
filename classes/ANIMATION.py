@@ -36,4 +36,6 @@ class MarbleForBots:
     def __init__(self):
         self.owner = -1
         self.square = -1
+        self.previousSquare = -1
         self.isAbleToFinish = False
+        self.wasAbleToFinish = False

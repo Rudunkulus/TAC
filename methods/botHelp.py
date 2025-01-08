@@ -1,4 +1,4 @@
-from classes import ANIMATION
+from classes import ANIMATION, DATA
 
 def getPossibleSquares(board:list[int], player:int, marbleSquare:int, movesLeft:int, isAbleToFinish:bool, cardValue:int):
     """ Return list of possible squares the given marble could reach with the given card.\n
@@ -170,6 +170,23 @@ def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->li
             square = _getPreviousSquare(square)
             squaresBetween.append(square)
     return squaresBetween
+
+def undoPreviousMove(botData:DATA.BotData):
+    marble:ANIMATION.MarbleForBots
+    for player in botData.players:
+        for marble in botData.marbles[player]:
+            tempSquare = marble.square
+            marble.square = marble.previousSquare
+            marble.previousSquare = tempSquare
+
+            tempBool = marble.isAbleToFinish
+            marble.isAbleToFinish = marble.wasAbleToFinish
+            marble.wasAbleToFinish = tempBool
+    # update Board:
+    botData.squares = [-1] * 96
+    for player in botData.players:
+        for marble in botData.marbles[player]:
+            botData.squares[marble.square] = player
 
 def isAbleToPlaySpecialCards(board:list[int], player:int)->bool:
     """Return True if player has at least one own marble on ring"""
