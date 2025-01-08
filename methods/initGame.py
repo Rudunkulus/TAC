@@ -13,7 +13,7 @@ def initGame(data:DATA.Data):
     _createMarbles(data)
     actions._updateSquares(data)
 
-def initSpecificSituation(data:DATA.Data, playerSequence, squares, remainingPile):
+def initSpecificSituation(data:DATA.Data, playerSequence, marbles, remainingPile):
     """ Creates the position as specified in the given parameters """
     data.cards.remainingPile = remainingPile
     data.board.playerSequence = playerSequence
@@ -21,7 +21,7 @@ def initSpecificSituation(data:DATA.Data, playerSequence, squares, remainingPile
     _createSquaresXY(data)
     for player in playerSequence:
         #create marbles player 1
-        for square in squares[player]:
+        for square in marbles[player]:
             marble = ANIMATION.Marble() # create marble
             marble.x, marble.y = data.board.squaresXY[square]
             marble.colour = data.playerSpecific.colour[player]
