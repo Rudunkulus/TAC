@@ -24,6 +24,7 @@ class Data:
         self.isAnyEntityStillMoving = False
         self.playerSpecific = _PlayerSpecific(self.colours)
         self.text = _Text()
+        self.botDecision = BotDecision()
 
 class _Parameters:
     def __init__(self):

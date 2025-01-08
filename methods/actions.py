@@ -58,18 +58,34 @@ def keyPress(data:DATA.Data, key:str)->None:
             _toggleSelectCard(data, cardSelected)
 
 def botTurn(data:DATA.Data, cardIndex=-1, marbleIndex=-1):
-    botData = _getBotData(data)
-    botDecision:DATA.BotDecision = botTemplate.main(botData) # (cardIndex, marbleIndex, landingSquare, isDiscarding) #TODO: validate structure of botDecision
-    if not _isMoveValid(data, botDecision):
-        print("Move is invalid, falling back to random move")
-        botDecision = botRandom.main(botData, cardIndex, marbleIndex)
-    if not botData.isPlayingASeven: # new card selected
-        data.cards.currentlySelected = botDecision.cardIndex
-    card:ANIMATION.Card = data.cards.inHand[calc.getActivePlayer(data)][data.cards.currentlySelected]
-    marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex]
+    if not data.board.isPlayingATac: # skip bot decision, which was done previously
+        botData = _getBotData(data)
+        botDecision:DATA.BotDecision = botTemplate.main(botData) # (cardIndex, marbleIndex, landingSquare, isDiscarding) #TODO: validate structure of botDecision
+        if not _isMoveValid(data, botDecision):
+            print("Move is invalid, falling back to random move")
+            botDecision = botRandom.main(botData, cardIndex, marbleIndex)
+        if not botData.isPlayingASeven: # new card selected
+            data.cards.currentlySelected = botDecision.cardIndex
 
-    if card.shownValue == 15:
-        _undoPreviousMove(data)
+        card:ANIMATION.Card = calc.getActiveCard(data)
+        marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex]
+
+        # set marble as active marble
+        
+
+        if card.shownValue == 15 and not botData.isPlayingASeven: # only undo the move the first time
+            data.botDecision = botDecision # save bot decision
+            # undo move, return for drawing the board and come here again
+            _undoPreviousMove(data)
+            card.value = botHelp.getValueOfLastNonTacCard(data.cards.discardPile)
+            data.board.isPlayingATac = True
+            return
+        
+    else: # load card and marble from before
+        botDecision = data.botDecision # load bot decision
+        card:ANIMATION.Card = calc.getActiveCard(data)
+        marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex]
+    data.board.isPlayingATac = False
     _doAction(data, card, marble, botDecision.landingSquare, botDecision.isDiscarding)
 
     # rest of the move
@@ -216,8 +232,8 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
     """Do the action of given card and marble or discard.\n
     Careful: this method doesn't check if combination is a valid move!""" #TODO: implement FS checks
 
-    # store state but not in middle of playing a seven
-    if data.board.remainderOfPlayedSeven == 0:
+    # store state but not in middle of playing a seven or after playing TAC
+    if data.board.remainderOfPlayedSeven == 0 and card.shownValue != 15:
         marbleTemp:ANIMATION.Marble
         for player in data.board.playerSequence:
             for marbleTemp in data.marbles.marbles[player]:
@@ -256,10 +272,13 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
         _removeMarble(data, landingSquare)
     
     # if marble starts from home: can't finish directly
-    marble.isAbleToFinish = (marble.square > 63 and marble.square < 80)
+    # marble.isAbleToFinish = not (marble.square > 63 and marble.square < 80)
 
     # if playing 4: move backwards
     isMovingForwards = card.value != 4
+    
+    # store moving direction
+    marble.isMovingForwards = isMovingForwards
 
     # can't finish right after leaving home
     marble.isAbleToFinish = marble.square not in botHelp.getHomeSquares(calc.getActivePlayer(data))
@@ -327,11 +346,16 @@ def _undoPreviousMove(data:DATA.Data):
                 if data.cards.discardPileTopCard.value == 14: # reversing a trickser means direct path
                     marble.waypoints.append(data.board.squaresXY[marble.square])
                 else:
-                    if data.cards.discardPileTopCard.value == 4: # revert the move means going forward
-                        isMovingForwards = True
-                    else:
-                        isMovingForwards = False
-                    for square in botHelp.getSquaresBetween(marble.previousSquare, marble.square, isMovingForwards):
+                    marble.isMovingForwards = not marble.isMovingForwards # reverse direction
+                    # index = -1 # check last entry first
+                    # # if multiple TACs in a row, reverse direction each time
+                    # while data.cards.discardPile[index] == 15:
+                    #     isMovingForwards = not isMovingForwards # reverse direction
+                    #     index -= 1
+                    # # if card is a four, reverse again
+                    # if data.cards.discardPileTopCard.value == 4: # revert the move means going forward
+                    #     isMovingForwards = not isMovingForwards
+                    for square in botHelp.getSquaresBetween(marble.previousSquare, marble.square, marble.isMovingForwards):
                         marble.waypoints.append(data.board.squaresXY[square])
     _updateSquares(data)
 

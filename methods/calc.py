@@ -48,7 +48,7 @@ def updateEntityMovement(data:DATA.Data, entity:ANIMATION.Card)->None:
     distance = _getDistanceToWaypoint(entity)
     if distance != -1: # still moving to next waypoints
         data.isAnyEntityStillMoving = True
-        if _getDistanceToWaypoint(entity) > 10 * entity.vel: # if far away from final destination, triple speed
+        if _getDistanceToEndpoint(entity) > 10 * entity.vel: # if far away from final destination, triple speed
             velocity = 3 * entity.vel
         else:
             velocity = entity.vel
@@ -100,6 +100,18 @@ def _getDistanceToWaypoint(entity:ANIMATION.Card)->float:
     if entity.waypoints: # TODO: maybe redundant but better safe than sorry
         xyCurrent = (entity.x, entity.y)
         xyTarget = entity.waypoints[0]
+        distance = _getDistance(xyCurrent, xyTarget)
+        return distance
+    else:
+        return -1
+
+def _getDistanceToEndpoint(entity:ANIMATION.Card)->float:
+    """ returns distance to current waypoint.\n
+    returns -1 if no waypoint exists\n
+    works for cards and marbles"""
+    if entity.waypoints: # TODO: maybe redundant but better safe than sorry
+        xyCurrent = (entity.x, entity.y)
+        xyTarget = entity.waypoints[-1]
         distance = _getDistance(xyCurrent, xyTarget)
         return distance
     else:

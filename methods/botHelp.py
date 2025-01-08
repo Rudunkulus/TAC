@@ -132,30 +132,26 @@ def _getPreviousSquare(square:int)->int:
             return square-1
     return saturate(square-1)
 
-def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True)->list[int]:
-    """ return list of squares that marble travels on\n
-    from one square to another including the end square """
-    player = -1
-    # check domain of landingSquare:
-    if endSquare > 63 and endSquare < 80: # endSquare in base -> not possible
-        print("ERROR: end square in home squares -> not possible")
-        return []
-
-    # find the player if any square is player specific:
-    if startSquare > 63:
-        if endSquare > 79:
-            if getOwner(startSquare) != getOwner(endSquare): # start and end in different players home/finish
-                print("ERROR: start square and end square are in different player's home/finish")
-                return []
-        else:
-            player = getOwner(startSquare)
-    else:
-        if endSquare > 79:
-            player = getOwner(endSquare)
-
-    if startSquare in getHomeSquares(player):
-        return [getEntrySquare(player)] # just return entry square. This case shouldn't be possible going backwards, so no extra check needed
+def getSquaresBetween(startSquare:int, endSquare:int, isMovingForwards=True, isPlayingTrickser=False)->list[int]:
+    """ Return list of squares that marble travels on from one square to another.\n
+    Return only one square (direct path) if:\n
+    - start square in home\n
+    - end square in home\n
+    - playing a Trickser"""
     
+    startSquareOwner = getOwner(startSquare)
+    endSquareOwner = getOwner(endSquare)
+
+    # check domain
+    if startSquareOwner != -1 and endSquareOwner != -1 and startSquareOwner != endSquareOwner:
+        print("ERROR: start square and end square are in different player's home/finish")
+        return []
+    
+    # check if direct path
+    if startSquare in range(64,80) or endSquare in range(64,80) or isPlayingTrickser:
+        return [endSquare]
+    
+    # not direct path
     squaresBetween = []
     if isMovingForwards:
         square = endSquare
@@ -248,7 +244,7 @@ def getOwner(square:int)->int:
     square must be between 64 and 95\n
     Return -1 if square exceeds domain"""
     if square < 64 or square > 95:
-        print("WARNING in getOwner(): square " + str(square) + " exceeded domain (64-95). Returning -1")
+        # print("WARNING in getOwner(): square " + str(square) + " exceeded domain (64-95). Returning -1")
         return -1
     else:
         return int((square - 64) % 16 / 4)

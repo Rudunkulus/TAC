@@ -27,6 +27,7 @@ class Marble:
         self.previousSquare = -1
         self.isSelected = 0
         self.vel = 10
+        self.isMovingForwards = True
         self.isAbleToFinish = False
         self.wasAbleToFinish = False
         self.waypoints = [] # tupel e.g. (0,0)
