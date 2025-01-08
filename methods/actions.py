@@ -258,12 +258,14 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
     # if playing 4: move backwards
     isMovingForwards = card.value != 4
 
+    # can't finish right after leaving home
+    marble.isAbleToFinish = marble.square not in botHelp.getHomeSquares(calc.getActivePlayer(data))
+
     # create waypoints for marble to travel on
     waypoints = botHelp.getSquaresBetween(marble.square, landingSquare, isMovingForwards)
     for waypoint in waypoints:
         marble.waypoints.append(data.board.squaresXY[waypoint])
     marble.square = landingSquare
-    marble.isAbleToFinish = True
 
     # if playing 7: check if moves remaining
     if card.value == 7:
