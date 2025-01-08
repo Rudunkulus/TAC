@@ -216,12 +216,13 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
     """Do the action of given card and marble or discard.\n
     Careful: this method doesn't check if combination is a valid move!""" #TODO: implement FS checks
 
-    # store state
-    marbleTemp:ANIMATION.Marble
-    for player in data.board.playerSequence:
-        for marbleTemp in data.marbles.marbles[player]:
-            marbleTemp.previousSquare = marbleTemp.square
-            marbleTemp.wasAbleToFinish = marbleTemp.isAbleToFinish
+    # store state but not in middle of playing a seven
+    if data.board.remainderOfPlayedSeven == 0:
+        marbleTemp:ANIMATION.Marble
+        for player in data.board.playerSequence:
+            for marbleTemp in data.marbles.marbles[player]:
+                marbleTemp.previousSquare = marbleTemp.square
+                marbleTemp.wasAbleToFinish = marbleTemp.isAbleToFinish
 
     # if forced to skip:
     if data.board.isForcedToSkip:
