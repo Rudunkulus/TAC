@@ -70,9 +70,6 @@ def botTurn(data:DATA.Data, cardIndex=-1, marbleIndex=-1):
         card:ANIMATION.Card = calc.getActiveCard(data)
         marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex]
 
-        # set marble as active marble
-        
-
         if card.shownValue == 15 and not botData.isPlayingASeven: # only undo the move the first time
             data.botDecision = botDecision # save bot decision
             # undo move, return for drawing the board and come here again
