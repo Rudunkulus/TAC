@@ -5,10 +5,15 @@ def getPossibleSquares(board:list[int], player:int, marbleSquare:int, movesLeft:
     Return empty list if no move is possible with current combination"""
     possibleSquares = []
     homeSquares = getHomeSquares(player)
+    finishSquares = getFinishSquares(player)
 
     # coming out of home
     if marbleSquare in homeSquares and cardValue in [1,13]: # different rules
         return [getEntrySquare(player)]
+
+    # check if marble is locked in: all squares in finish after the marble need to be occupied TODO: maybe implement FS to check for colour of marbles
+    if marbleSquare in finishSquares and min(board[marbleSquare:finishSquares[3]]+1) != -1:
+        return []
     
     if cardValue == 14 and marbleSquare < 64: # trickser
         if isAbleToPlaySpecialCards(board, player):
