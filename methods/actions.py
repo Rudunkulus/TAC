@@ -82,7 +82,9 @@ def botTurn(data:DATA.Data, cardIndex=-1, marbleIndex=-1):
         botDecision = data.botDecision # load bot decision
         card:ANIMATION.Card = calc.getActiveCard(data)
         marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex]
+    
     data.board.isPlayingATac = False
+    data.board.isForcedToSkip = False # TODO: differentiate between isDiscarding and isUsingAbitility
     _doAction(data, card, marble, botDecision.landingSquare, botDecision.isDiscarding)
 
     # rest of the move
