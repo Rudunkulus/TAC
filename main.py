@@ -18,8 +18,8 @@ FPS=data.parameters.FPS
 clock=pygame.time.Clock()
 run=True
 
-# actions.initGame()
-initGame.initRandomPosition(data)
+initGame.initGame(data)
+# initGame.initRandomPosition(data)
 
 while run:
     clock.tick(FPS)
