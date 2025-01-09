@@ -279,3 +279,75 @@ def getFinishSquares(player:int)->list[int]:
     else:
         print("WARNING in getFinishSquares(): player (" + str(player) + ") exceeded domain (0-3). Returning empty list")
         return []
+    
+def _checkDomainBoard(board:list[int])->bool:
+    """Return True if board has correct data type, length and values"""
+    if isinstance(board, list):
+        if len(board) == 96:
+            for square in range(96):
+                if board[square] not in range(-1,4):
+                    print(f"ERROR: board has entry {board[square]} at square {square}. Must be an integer between -1 to 3")
+                    return False
+            return True
+        else:
+            print(f"ERROR: board is of length {len(board)}. Must be 96")
+            return False
+    else:
+        print("ERROR: board is not a list.")
+        False
+
+def _checkDomainPlayer(player:int)->bool:
+    """Return True if player has correct data type and value"""
+    if isinstance(player, int):
+        if player not in range(4):
+            print(f"ERROR: player is {player}. Must be an integer between 0 and 3")
+            return False
+        else:
+            return True
+    else:
+        print("ERROR: player is not an integer.")
+        return False
+
+def _checkDomainCardValue(cardValue:int)->bool:
+    """Return True if cardValue has correct data type and value"""
+    if isinstance(cardValue, int):
+        if cardValue not in range(1,20):
+            print(f"ERROR: cardValue is {cardValue}. Must be an integer between 1 and 19")
+            return False
+        else:
+            return True
+    else:
+        print("ERROR: cardValue is not an integer.")
+        return False
+
+def _checkDomainSquare(square:int)->bool:
+    """Return True if square has correct data type and value"""
+    if isinstance(square, int):
+        if square not in range(96):
+            print(f"ERROR: square is {square}. Must be an integer between 0 and 95")
+            return False
+        else:
+            return True
+    else:
+        print("ERROR: square is not an integer.")
+        return False
+
+def _checkDomainRemainderOfSeven(remainderOfSeven:int)->bool:
+    """Return True if remainderOfSeven has correct data type and value"""
+    if isinstance(remainderOfSeven, int):
+        if remainderOfSeven not in range(8):
+            print(f"ERROR: remainderOfSeven is {remainderOfSeven}. Must be an integer between 0 and 7")
+            return False
+        else:
+            return True
+    else:
+        print("ERROR: remainderOfSeven is not an integer.")
+        return False
+    
+def _checkDomainIsAbleToFinish(isAbleToFinish:bool)->bool:
+    """Return True if isAbleToFinish has correct data type"""
+    if isinstance(isAbleToFinish, bool):
+        return True
+    else:
+        print("ERROR: isAbleToFinish is not a bool.")
+        return False
