@@ -85,7 +85,7 @@ def isAnyMovePossible(data:DATA.Data):
     marble:ANIMATION.Marble
     for card in data.cards.inHand[player]:
         for marble in data.marbles.marbles[player]: # tries every combination of card and marble
-            if card.value in [8,14,15] and botHelp.isAbleToPlaySpecialCards(data.board.squares, player):
+            if card.value in [8,14,15] and botHelp.isAbleToUseAbility(data.board.squares, player):
                 return True
             possibleMoves = botHelp.getPossibleSquares(data.board.squares, player, marble.square, card.value, marble.isAbleToFinish, card.value)
             if possibleMoves: # a move is possible

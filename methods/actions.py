@@ -39,7 +39,7 @@ def mouseClick(data:DATA.Data, x:float, y:float)->None:
             _nextTurn(data)
             return
         
-        if calc.getActiveCard(data).value == 8 and botHelp.isAbleToPlaySpecialCards:
+        if calc.getActiveCard(data).value == 8 and botHelp.isAbleToUseAbility:
             data.board.isForcedToSkip = True
             _discardCard(data)
             _nextTurn(data)
@@ -60,7 +60,7 @@ def keyPress(data:DATA.Data, key:str)->None:
 def botTurn(data:DATA.Data, cardIndex=-1, marbleIndex=-1):
     if not data.board.isPlayingATac: # skip bot decision, which was done previously
         botData = _getBotData(data)
-        botDecision:DATA.BotDecision = botTemplate.main(botData) # (cardIndex, marbleIndex, landingSquare, isDiscarding) #TODO: validate structure of botDecision
+        botDecision:DATA.BotDecision = botTemplate.main(botData) # TODO: validate structure of botDecision
         if not _isMoveValid(data, botDecision):
             print("Move is invalid, falling back to random move")
             botDecision = botRandom.main(botData, cardIndex, marbleIndex)
@@ -153,8 +153,11 @@ def _isMoveValid(data:DATA.Data, botDecision:DATA.BotDecision)->bool:
     card:ANIMATION.Card = data.cards.inHand[calc.getActivePlayer(data)][botDecision.cardIndex]
     marble:ANIMATION.Marble = data.marbles.marbles[calc.getActivePlayer(data)][botDecision.marbleIndex] 
 
+    # if forced to skip: only allowd to play TAC
+    if data.board.isForcedToSkip:
+        # check if player has TAC
     # only allowed to discard if forced to or played card is a tac or 8 TODO: introduce playAbility
-    if botDecision.isDiscarding and not (data.board.isForcedToSkip or card.value == 8): # false flag
+    if data.board.isForcedToSkip and not (data.board.isForcedToSkip or card.value == 8): # false flag
         return True
 
     _createProjectedSquares(data, card, marble)
@@ -206,7 +209,7 @@ def _toggleSelectCard(data:DATA.Data, cardIndex:int)->None:
         data.cards.currentlySelected = -1
         data.board.projectedSquares = [] # clear projected squares
 
-def _createProjectedSquares(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble): #TODO: cant select marlbe in home for trickser
+def _createProjectedSquares(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble):
     """Create the possible moves with the given card and marble."""
     if card is None:
         print("ERROR in _createProjectedSquares: no card selected")
@@ -214,18 +217,8 @@ def _createProjectedSquares(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATIO
     if marble is None:
         print("ERROR in _createProjectedSquares: no marble selected")
         return
-
-    # if played TAC: take value of previously played non-tac card
-    if card.value == 15:
-        card.value = botHelp.getValueOfLastNonTacCard(data.cards.discardPile)
-
-    # in the middle of playing a 7
-    if data.board.remainderOfPlayedSeven > 0:
-        movesLeft = data.board.remainderOfPlayedSeven
-    else:
-        movesLeft = card.value
     
-    data.board.projectedSquares = botHelp.getPossibleSquares(data.board.squares, calc.getActivePlayer(data), marble.square, movesLeft, marble.isAbleToFinish, card.value)
+    data.board.projectedSquares = botHelp.getPossibleSquares(data.board.squares, calc.getActivePlayer(data),card.value, marble.square, marble.isAbleToFinish, data.board.remainderOfPlayedSeven)
 
 def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, landingSquare:int, isDiscarding:bool) -> None:
     """Do the action of given card and marble or discard.\n
@@ -246,7 +239,7 @@ def _doAction(data:DATA.Data, card:ANIMATION.Card, marble:ANIMATION.Marble, land
     # if discarding: other checks aren't necessary
     if isDiscarding:
         # if playing 8 and allowed to use abilities: force next player to skip TODO: remove ability check
-        data.board.isForcedToSkip = card.value == 8 and botHelp.isAbleToPlaySpecialCards(data.board.squares, calc.getActivePlayer(data))
+        data.board.isForcedToSkip = card.value == 8 and botHelp.isAbleToUseAbility(data.board.squares, calc.getActivePlayer(data))
         return
 
     # if using Trickser: swap marbles

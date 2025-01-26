@@ -174,6 +174,7 @@ class BotData:
         self.discardPile = [] # list[int]
         self.remainingCards = [] # list[int]
         self.isForcedToSkipTurn = False
+        self.hasValidMove = True
         self.isPlayingASeven = False
         self.isPlayingATac = False
         self.remainderOfSeven = 0
@@ -183,4 +184,4 @@ class BotDecision:
         self.cardIndex = 0
         self.marbleIndex = 0
         self.landingSquare = 0
-        self.isDiscarding = 0
+        self.isUsingAbility = False

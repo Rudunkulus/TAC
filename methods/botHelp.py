@@ -1,39 +1,76 @@
 from classes import ANIMATION, DATA
 
-def getPossibleSquares(board:list[int], player:int, marbleSquare:int, movesLeft:int, isAbleToFinish:bool, cardValue:int):
-    """ Return list of possible squares the given marble could reach with the given card.\n
-    Return empty list if no move is possible with current combination"""
+def getPossibleSquares(board:list[int], player:int, cardValue:int, marbleSquare:int, isAbleToFinish:bool, remainderOfSeven=0)->tuple[list[int],bool]:
+    """ Return a list and a bool:\n
+    - list of possible squares the given marble could reach with the given card.\n
+    Return empty list if no move is possible with current combination\n
+    - Return True if player is able to use ability regardless of marbleSquare"""
+
+    # check if any value exceeds domain
+    if not (_checkDomainBoard(board) and _checkDomainCardValue(cardValue) and _checkDomainSquare(marbleSquare) and _checkDomainIsAbleToFinish and _checkDomainRemainderOfSeven):
+        return [], False
+
+    # create isAbleToUseAbility
+    isAbleToUseAbility = hasPlayerAtLeastOneMarbleOnRing(board, player) and cardValue in [8] # TODO: add TAC?
+
+    ####################
+    # check parameters #
+    ####################
+
+    # check if square is empty
+    if board[marbleSquare] == -1:
+        print("WARNING in getPossibleSquares(): selected square is empty. Returning empty list")
+        return ([], isAbleToUseAbility)
+    
+    # check if selected marble belongs to player
+    if board[marbleSquare] != player and cardValue != 14:
+        print("WARNING in getPossibleSquares(): selected marble of another player while not using a trickser. Returning empty list")
+        return ([], isAbleToUseAbility)
+
+    # check remainderOfSeven
+    if remainderOfSeven > 0:
+        movesLeft = remainderOfSeven
+        if cardValue != 7:
+            print("WARNING in getPossibleSquares(): if card value is not 7, remainderOfSeven should be 0. Still continuing with " + str(movesLeft) + " moves left.")
+    else:
+        movesLeft = cardValue
+
+    ##########################
+    # create possible Square #
+    ##########################
+
     possibleSquares = []
     homeSquares = getHomeSquares(player)
 
     # coming out of home
     if marbleSquare in homeSquares and cardValue in [1,13]: # different rules
-        return [getEntrySquare(player)]
+        return [getEntrySquare(player)], isAbleToUseAbility
 
     # check if marble is locked in
     if isMarbleLockedIn(board, marbleSquare):
-        return []
-    
-    if cardValue == 14 and marbleSquare < 64: # trickser
-        if isAbleToPlaySpecialCards(board, player):
-            # find all squares on ring that are ocupied by a marble
+        return [], isAbleToUseAbility
+
+    # trickser
+    if cardValue == 14 and marbleSquare < 64:
+        if hasPlayerAtLeastOneMarbleOnRing(board, player):
+            # find all squares on ring that are occupied by a marble
             for square in range(64):
                 if board[square] != -1 and square != marbleSquare:
                     possibleSquares.append(square)
-            if len(possibleSquares) > 0: # need at least two marbles to trickser
-                return possibleSquares
+            if len(possibleSquares) > 0: # need at one other marble to trickser
+                return possibleSquares, isAbleToUseAbility
             else:
-                return []
+                return [], isAbleToUseAbility
         else:
-            return []
+            return [], isAbleToUseAbility
 
-    if not marbleSquare in homeSquares: # normal move
-        if cardValue != 4:
-            for nextSquare in _getNextSquares(player, marbleSquare, isAbleToFinish):
-                _tryNextSquare(board, player, nextSquare, movesLeft-1, isAbleToFinish, possibleSquares, cardValue)
-        else:
-            _tryPreviousSquare(board, marbleSquare, cardValue, possibleSquares)
-    return possibleSquares
+    # normal move
+    if cardValue != 4: # moving forwards
+        for nextSquare in _getNextSquares(player, marbleSquare, isAbleToFinish):
+            _tryNextSquare(board, player, nextSquare, movesLeft-1, isAbleToFinish, possibleSquares, cardValue)
+    else: # moving backwards
+        _tryPreviousSquare(board, marbleSquare, cardValue, possibleSquares)
+    return possibleSquares, isAbleToUseAbility
 
 def _tryPreviousSquare(board:list[int], square:int, movesLeft:int, possibleSquares:list[int]):
     """Recursive process of trying previous squares until\n
@@ -91,7 +128,7 @@ def _tryNextSquare(board:list[int], player:int, square:int, movesLeft:int, isAbl
 def _getNextSquares(player:int, square:int, isAbleToFinish:bool)->list[int]:
     """Return square on board that comes after current one.\n
     Return list because multiple squares are possible: go to finish or continue another round\n
-    Most of the times it is only on entry, though"""
+    (Most of the times it is only on entry, though)"""
     nextSquares=[]
     entrySquare = getEntrySquare(player)
     finishSquares = getFinishSquares(player)
@@ -183,10 +220,10 @@ def undoPreviousMove(botData:DATA.BotData):
         for marble in botData.marbles[player]:
             botData.squares[marble.square] = player
 
-def isAbleToPlaySpecialCards(board:list[int], player:int)->bool:
+def hasPlayerAtLeastOneMarbleOnRing(board:list[int], player:int)->bool:
     """Return True if player has at least one own marble on ring"""
     for square in range(64):
-        if board[square] != player:
+        if board[square] == player:
             return True
     return False
 
